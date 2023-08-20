@@ -17,6 +17,15 @@ export class UserService {
     });
   }
 
+  //add this while create auth module
+  async findOneWithUserNAme(userName: string) {
+    return await this.userRepo.findOne({
+      where: {
+        email: userName,
+      },
+    });
+  }
+
   async create(createUserDto: CreateUserDto) {
     const user = this.userRepo.create(createUserDto);
     return await this.userRepo.save(user);
