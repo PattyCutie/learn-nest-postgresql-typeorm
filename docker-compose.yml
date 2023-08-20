@@ -1,1 +1,19 @@
-# NExt step is add this file with the detail of images, volumes and containers
+version: '3'
+services:
+  db: 
+    image: postgres
+    restart: always
+    volumes: 
+      - ./data/db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=testDB
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres 
+  
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
