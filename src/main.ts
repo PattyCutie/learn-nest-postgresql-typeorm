@@ -12,6 +12,7 @@ async function bootstrap() {
     }),
   );
 
+  console.log({ secret: process.env.jwt_secret });
   await app.listen(port);
 }
 bootstrap();
