@@ -7,10 +7,11 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto } from './dto/createUserDto';
-import { UserService } from './user.service';
-import { CommentService } from 'src/comment/comment.service';
 import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
+
+import { CommentService } from 'src/comment/comment.service';
+import { CreateUserDto } from './dto/createUserDto';
+import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
@@ -24,21 +25,14 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @UseGuards(JwtGuard)
-  @Get(':id/comments')
-  getUserComment(@Param('id') id: string) {
-    return this.commentService.findUserComments(id);
-  }
-
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
-  @Put(':id')
-  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(id, updateUserDto);
+  @UseGuards(JwtGuard)
+  @Get(':id/comments')
+  getUserComment(@Param('id') id: string) {
+    return this.commentService.findUserComments(id);
   }
-  // @Patch()
-  // @Delete()
 }
