@@ -1,12 +1,40 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ExamProgressModule } from './modules/exam-progress/exam-progress.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
-import { ExamGenerateModule } from './modules/exam-generate/exam-generate.module';
+import { ExamModule } from './modules/exam/exam.module';
+import { ExamProgressModule } from './modules/exam-progress/exam-progress.module';
+import { UserEntity } from './entity/user.entity';
 
 @Module({
-  imports: [UserModule, ExamProgressModule, ExamGenerateModule],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        const isProduction = configService.get('NODE_ENV') === 'production';
+        return {
+          type: 'postgres',
+          host: configService.get('POSTGRES_HOST'),
+          port: configService.get('POSTGRES_DB_PORT'),
+          database: configService.get('POSTGRES_DB'),
+          username: configService.get('POSTGRES_USER'),
+          password: configService.get('POSTGRES_PASSWORD'),
+          synchronize: true,
+          logging: !isProduction,
+          entities: [UserEntity],
+        };
+      },
+      inject: [ConfigService],
+    }),
+    UserModule,
+    ExamModule,
+    ExamProgressModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -8,6 +8,9 @@
 # Environment variables
 .env
 
+#docker
+docker-compose.yml
+
 # Logs
 logs
 *.log
