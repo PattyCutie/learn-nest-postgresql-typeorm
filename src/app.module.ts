@@ -5,8 +5,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
 import { ExamModule } from './modules/exam/exam.module';
-import { ExamProgressModule } from './modules/exam-progress/exam-progress.module';
 import { UserEntity } from './entity/user.entity';
+import { ExamEntity } from './entity/exam.entity';
+import { ExamProgressEntity } from './entity/exam-progress.entity';
+import { QuestionEntity } from './entity/question.entity';
+import { UserAnalyticsEntity } from './entity/user-analytic.entity';
+import { UserAnalyticModule } from './modules/user-analytic/user-analytic.module';
+import { UserChoiceEntity } from './entity/user-choice.entity';
+import { ExamDetailsEntity } from './entity/exam-details.entity';
 
 @Module({
   imports: [
@@ -26,14 +32,23 @@ import { UserEntity } from './entity/user.entity';
           password: configService.get('POSTGRES_PASSWORD'),
           synchronize: true,
           logging: !isProduction,
-          entities: [UserEntity],
+          entities: [
+            UserEntity,
+            UserAnalyticsEntity,
+            ExamProgressEntity,
+            ExamDetailsEntity,
+            ExamEntity,
+            QuestionEntity,
+            UserChoiceEntity,
+          ],
         };
       },
       inject: [ConfigService],
     }),
+    //Main modules
     UserModule,
     ExamModule,
-    ExamProgressModule,
+    UserAnalyticModule,
   ],
   controllers: [AppController],
   providers: [AppService],
