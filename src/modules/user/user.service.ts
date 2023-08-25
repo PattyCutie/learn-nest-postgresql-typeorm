@@ -80,7 +80,10 @@ export class UserService {
     updateUserDto: UpdateUserDto,
   ): Promise<HttpResponse<void>> {
     try {
-      const updateUserData = await this.userDal.getUserById(id);
+      const updateUserData = await this.userDal.updateUserById(
+        id,
+        updateUserDto,
+      );
       if (!updateUserData) {
         return {
           statusCode: responseConfig.NOT_FOUND.statusCode,
@@ -88,7 +91,6 @@ export class UserService {
         };
       }
 
-      await this.userDal.updateUserById(id, updateUserDto);
       const { examProgresses, userAnalytics, password, exam, ...result } =
         updateUserData;
 

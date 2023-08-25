@@ -34,14 +34,12 @@ export class UserEntity {
   @Column({ unique: true, nullable: false })
   email: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: false })
   password: string;
 
   @BeforeInsert()
-  @BeforeUpdate()
-  async setPassword(password: string): Promise<void> {
-    const hashedPassword = await hashPassword(`${this.id}-${password}`);
-    this.password = hashedPassword;
+  async hashPassword() {
+    this.password = await hashPassword(this.password);
   }
 
   @OneToMany(() => ExamEntity, (exam) => exam.user)
