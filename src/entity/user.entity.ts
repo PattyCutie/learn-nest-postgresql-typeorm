@@ -1,7 +1,9 @@
 import * as bcrypt from 'bcrypt';
 import {
   BeforeInsert,
+  BeforeUpdate,
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   OneToMany,
@@ -12,11 +14,19 @@ import { Database } from 'src/config/db.config';
 import { UserAnalyticsEntity } from './user-analytic.entity';
 import { ExamEntity } from './exam.entity';
 import { ExamProgressEntity } from './exam-progress.entity';
+import { hashPassword } from 'src/utils/hash.utils';
 
 @Entity({ name: Database.Table.User })
 export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @CreateDateColumn({
+    readonly: true,
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  created_at: Date;
 
   @Column({ unique: true, nullable: false })
   username: string;
@@ -28,8 +38,10 @@ export class UserEntity {
   password: string;
 
   @BeforeInsert()
-  async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 10);
+  @BeforeUpdate()
+  async setPassword(password: string): Promise<void> {
+    const hashedPassword = await hashPassword(`${this.id}-${password}`);
+    this.password = hashedPassword;
   }
 
   @OneToMany(() => ExamEntity, (exam) => exam.user)

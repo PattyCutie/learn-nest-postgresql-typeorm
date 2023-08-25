@@ -3,6 +3,12 @@ export default {
     statusCode: 200,
     message: 'Success',
   },
+
+  SUCCESS_CREATE: {
+    statusCode: 201,
+    message: 'Success Created Data',
+  },
+
   INTERNAL_SERVER_ERROR: {
     statusCode: 500,
     message: 'Interval Server Error',

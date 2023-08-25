@@ -39,12 +39,12 @@ export class ExamProgressEntity {
   timeSpent: number;
 
   @Column()
-  totalPointsEarned: number;
+  totalPoints: number;
 
-  @OneToMany(() => QuestionEntity, (question) => question.examProgress, {
+  @OneToMany(() => QuestionEntity, (questions) => questions.examProgress, {
     cascade: true,
   })
-  question: QuestionEntity[];
+  questions: QuestionEntity[];
 
   @OneToMany(() => UserChoiceEntity, (userChoice) => userChoice.examProgress, {
     cascade: true,

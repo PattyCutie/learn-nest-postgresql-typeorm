@@ -1,11 +1,11 @@
 export interface ExamReqForm {
   userId: string;
   examType?: ExamType;
-  subject: Subject;
+  subjectVal: SubjectVal;
   section: Section;
   Part: Part;
   topic: Topic;
-  level: Level;
+  levels: Level[];
   questionTypes: QuestionType;
   duration?: number;
   amount?: number;
@@ -25,29 +25,33 @@ export interface Question {
   correctAnswer: string;
 }
 
-export type ExamType = 'Actual' | 'Practice';
+export enum ExamType {
+  Actual = 'Actual',
+  Practice = 'Practice',
+}
 
 export type Level =
   | 'auto'
-  | 'Beginer'
+  | 'Beginner'
   | 'Regular'
   | 'intermediate'
   | 'advance'
   | 'mix';
 
-export type QuestionType =
-  | 'MultipleChoice'
-  | 'MultipleResponse'
-  | 'TrueFalse'
-  | 'SortingRanking'
-  | 'FillBlank';
+export enum QuestionType {
+  MultipleChoice = 'MultipleChoice',
+  MultipleResponse = 'MultipleResponse',
+  TrueFalse = 'TrueFalse',
+  SortingRanking = 'SortingRanking',
+  FillBlank = 'FillBlank',
+}
 
 ///////////////////////////
 // Need to impro this below maybe there is too complicate mapping??
-export type SubjectToeic = 'Toeic';
-export type SubjectBiology = 'Biology';
+export type subjectValToeic = 'Toeic';
+export type subjectValBiology = 'Biology';
 
-export type Subject = SubjectToeic | SubjectBiology;
+export type SubjectVal = subjectValToeic | subjectValBiology;
 
 /// Section depend on Subject
 export type SectionToeic = 'reading' | 'listening';

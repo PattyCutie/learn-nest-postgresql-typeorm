@@ -6,7 +6,8 @@ import {
   Question,
   QuestionType,
   Section,
-  Subject,
+  SubjectVal,
+  Topic,
 } from 'src/types/exam.type';
 import {
   Entity,
@@ -17,7 +18,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
-import { ExamProgress } from 'src/types/user-analytic';
+import { ExamProgress } from 'src/types/user-analytic.type';
 import { ExamProgressEntity } from './exam-progress.entity';
 
 @Entity({ name: Database.Table.Exam })
@@ -35,7 +36,7 @@ export class ExamEntity {
   examType: ExamType;
 
   @Column()
-  subject: Subject;
+  subjectVal: SubjectVal;
 
   @Column()
   section: Section;
@@ -44,10 +45,10 @@ export class ExamEntity {
   part: Part;
 
   @Column()
-  topic: Part;
+  topic: Topic;
 
-  @Column()
-  level: Level;
+  @Column('text', { array: true })
+  levels: Level[];
 
   @Column()
   questionTypes: QuestionType;

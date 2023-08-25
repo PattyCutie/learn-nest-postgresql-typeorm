@@ -1,16 +1,16 @@
-import { ExamReqForm, ExamRes, Level } from './exam.type';
+import { ExamRes, Level, Part, SubjectVal } from './exam.type';
 
 export interface UserAnalytic {
   userId: string;
+  examProgresses: ExamProgress[];
   performanceTrendsOverTime: number[];
   averageTimeSpentOnEachQuestion: number;
   successRateForEachQuestion: number[];
   comparisonWithOtherUsersPerformance: number;
-  totalScoreSubject: Record<string, number>;
-  totalScoreSkillPart: Record<string, number>;
+  totalScoreSubjectVal: Record<SubjectVal, number>;
+  totalScoreSkillPart: Record<Part, number>;
   totalScoreExamLevel: Record<Level, number>;
   overallPercentagePerformance: number;
-  examProgresses: ExamProgress[];
 }
 
 export interface ExamProgress {
@@ -20,7 +20,7 @@ export interface ExamProgress {
   submittedAt: Date;
   amountOfQA: number;
   timeSpent: number;
-  totalPointsEarned: number;
+  totalPoints: number;
   examDetails: ExamDetails;
 }
 export interface ExamDetails extends ExamRes {
@@ -32,7 +32,7 @@ export interface UserChoice {
   questionId: string;
   questionIndex: number;
   choice: string;
-  isCorrect: IsCorrectChoice;
+  isCorrectChoice: IsCorrectChoice;
 }
 
 export type IsCorrectChoice = boolean | null;

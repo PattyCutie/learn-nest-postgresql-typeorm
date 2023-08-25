@@ -3,11 +3,12 @@ import { ExamRes } from './exam.type';
 
 export interface IUser {
   id: string;
-  keyCloakId: string; //add this to table/entity/DTo after connect key cloak
+  //keyCloakId: string; //add this to table/entity/DTo after connect key cloak
+  created_at: Date;
   username: string;
   email: string;
   password: string;
-  userRole: UserRole; //add this to table/entity/DTo after connect key cloak
+  //userRole: UserRole; //add this to table/entity/DTo after connect key cloak
   userProfile?: UserProfile;
 }
 
@@ -16,5 +17,10 @@ export interface UserProfile {
   userAnalytic?: UserAnalyticsEntity | null;
   examReses?: ExamRes[] | null;
 }
+
 //temporary Roles
-export type UserRole = 'Admin' | 'AUser' | 'NUser';
+export enum UserRole {
+  Admin = 'Admin',
+  AUser = 'AUser',
+  NUser = 'NUser',
+}

@@ -13,6 +13,8 @@ import { UserAnalyticsEntity } from './entity/user-analytic.entity';
 import { UserAnalyticModule } from './modules/user-analytic/user-analytic.module';
 import { UserChoiceEntity } from './entity/user-choice.entity';
 import { ExamDetailsEntity } from './entity/exam-details.entity';
+import { AuthModule } from './modules/auth/auth.module';
+import { ExamProgressModule } from './modules/exam-progress/exam-progress.module';
 
 @Module({
   imports: [
@@ -49,6 +51,8 @@ import { ExamDetailsEntity } from './entity/exam-details.entity';
     UserModule,
     ExamModule,
     UserAnalyticModule,
+    AuthModule,
+    ExamProgressModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -7,7 +7,7 @@ import {
   OneToOne,
 } from 'typeorm';
 import { ExamProgressEntity } from './exam-progress.entity';
-import { Level } from 'src/types/exam.type';
+import { Level, Part, SubjectVal } from 'src/types/exam.type';
 import { Database } from 'src/config/db.config';
 import { UserEntity } from './user.entity';
 import { ExamEntity } from './exam.entity';
@@ -40,10 +40,10 @@ export class UserAnalyticsEntity {
   comparisonWithOtherUsersPerformance: number;
 
   @Column('jsonb')
-  totalScoreSubject: Record<string, number>;
+  totalScoreSubjectVal: Record<SubjectVal, number>;
 
   @Column('jsonb')
-  totalScoreSkillPart: Record<string, number>;
+  totalScoreSkillPart: Record<Part, number>;
 
   @Column('jsonb')
   totalScoreExamLevel: Record<Level, number>;
