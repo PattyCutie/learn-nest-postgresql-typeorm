@@ -4,13 +4,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Database } from 'src/config/db.config';
 import { hashPassword } from 'src/utils/hash.utils';
+import { ExamEntity } from './exam.entity';
+import { ExaminationEntity } from './examination.entity';
+import { ExamProgressEntity } from './exam-progress';
 
 @Entity({ name: Database.Table.User })
 export class UserEntity {
@@ -37,4 +38,16 @@ export class UserEntity {
   async hashPassword() {
     this.password = await hashPassword(this.password);
   }
+
+  @OneToMany(() => ExamEntity, (exam) => exam.userId)
+  exam?: ExamEntity[];
+
+  @OneToMany(() => ExaminationEntity, (examination) => examination.user)
+  examination?: ExaminationEntity[];
+
+  @OneToMany(
+    () => ExamProgressEntity,
+    (examProgress) => examProgress.questionProgress,
+  )
+  examProgress?: ExamProgressEntity[];
 }

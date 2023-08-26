@@ -9,6 +9,12 @@ import { UserEntity } from './entity/user.entity';
 import { AuthModule } from './modules/auth/auth.module';
 import { ExamProgressModule } from './modules/exam-progress/exam-progress.module';
 import { ExaminationModule } from './modules/examination/examination.module';
+import { QuestionEntity } from './entity/question.entity';
+import { ExamEntity } from './entity/exam.entity';
+import { QuestionSheetEntity } from './entity/question-sheet.entity';
+import { ExaminationEntity } from './entity/examination.entity';
+import { ExamProgressEntity } from './entity/exam-progress';
+import { QuestionProgressEntity } from './entity/question-progress';
 
 @Module({
   imports: [
@@ -28,15 +34,23 @@ import { ExaminationModule } from './modules/examination/examination.module';
           password: configService.get('POSTGRES_PASSWORD'),
           synchronize: true,
           logging: !isProduction,
-          entities: [UserEntity],
+          entities: [
+            UserEntity,
+            ExamEntity,
+            QuestionEntity,
+            ExaminationEntity,
+            QuestionSheetEntity,
+            ExamProgressEntity,
+            QuestionProgressEntity,
+          ],
         };
       },
       inject: [ConfigService],
     }),
     //Main modules
+    AuthModule,
     UserModule,
     ExamModule,
-    AuthModule,
     ExamProgressModule,
     ExaminationModule,
   ],

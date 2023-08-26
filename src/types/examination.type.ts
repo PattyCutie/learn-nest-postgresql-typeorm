@@ -37,5 +37,5 @@ export interface QuestSheet {
   };
   question: string;
   choices: string[];
-  selectedChoice: string | null; // Student's selected choice
+  selectedChoice?: string | null;
 }

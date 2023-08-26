@@ -3,9 +3,13 @@ import { ExamProgressService } from './exam-progress.service';
 import { ExamProgressController } from './exam-progress.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ExamProgressDal } from './exam-progress.dal';
+import { ExamProgressEntity } from 'src/entity/exam-progress';
+import { QuestionProgressEntity } from 'src/entity/question-progress';
 
 @Module({
-  //imports: [TypeOrmModule.forFeature([ExamProgressEntity])],
+  imports: [
+    TypeOrmModule.forFeature([ExamProgressEntity, QuestionProgressEntity]),
+  ],
   providers: [ExamProgressService, ExamProgressDal],
   controllers: [ExamProgressController],
 })
