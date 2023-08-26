@@ -12,10 +12,8 @@ export class UserService {
   async createUser(createUserDto: CreateUserDto): Promise<HttpResponse<void>> {
     try {
       const userData = await this.userDal.createUser(createUserDto);
-      const { examProgresses, userAnalytics, password, ...result } = userData;
-
       this.logger.log('Successfully saved new user to database');
-      this.logger.debug(JSON.stringify(result));
+      this.logger.debug(JSON.stringify(userData));
       return {
         statusCode: responseConfig.SUCCESS_CREATE.statusCode,
         message: responseConfig.SUCCESS_CREATE.message,
@@ -29,21 +27,22 @@ export class UserService {
       };
     }
   }
+
   async getAllUsers(): Promise<HttpResponse<void>> {
     try {
-      const result = await this.userDal.getAllUser();
-      if (result.length === 0) {
+      const allUsers = await this.userDal.getAllUser();
+      if (allUsers.length === 0) {
         return {
           statusCode: responseConfig.NOT_FOUND.statusCode,
           message: responseConfig.NOT_FOUND.message,
         };
       }
-      const userData = result.map((user) => {
-        const { password, ...userData } = user;
-        return userData;
-      });
       this.logger.log('Successfully get all users from database');
-      this.logger.debug(JSON.stringify(userData));
+      this.logger.debug(JSON.stringify(allUsers));
+      return {
+        statusCode: responseConfig.SUCCESS.statusCode,
+        message: responseConfig.SUCCESS.message,
+      };
     } catch (error) {
       this.logger.error('Failed to get all users from database');
       this.logger.error(error);
@@ -63,16 +62,20 @@ export class UserService {
           message: responseConfig.NOT_FOUND.message,
         };
       }
-
-      const { examProgresses, userAnalytics, password, ...result } = userData;
-
       this.logger.log(`Successfully get user from database with id: ${id}`);
-      this.logger.debug(JSON.stringify(result));
+      this.logger.debug(JSON.stringify(userData));
       return {
         statusCode: responseConfig.SUCCESS.statusCode,
         message: responseConfig.SUCCESS.message,
       };
-    } catch (error) {}
+    } catch (error) {
+      this.logger.error(`Failed to update user from database with id: ${id}`);
+      this.logger.error(error);
+      return {
+        statusCode: responseConfig.INTERNAL_SERVER_ERROR.statusCode,
+        message: responseConfig.INTERNAL_SERVER_ERROR.message,
+      };
+    }
   }
 
   async updateUserById(
@@ -90,12 +93,8 @@ export class UserService {
           message: responseConfig.NOT_FOUND.message,
         };
       }
-
-      const { examProgresses, userAnalytics, password, exam, ...result } =
-        updateUserData;
-
       this.logger.log(`Successfully update user from database with id: ${id}`);
-      this.logger.debug(JSON.stringify(result));
+      this.logger.debug(JSON.stringify(updateUserData));
       return {
         statusCode: responseConfig.SUCCESS.statusCode,
         message: responseConfig.SUCCESS.message,
@@ -112,18 +111,19 @@ export class UserService {
 
   async deleteUserById(id: string): Promise<HttpResponse<void>> {
     try {
-      const userData = await this.userDal.getUserById(id);
+      const userData = await this.userDal.deleteUserById(id);
       if (!userData) {
         return {
           statusCode: responseConfig.NOT_FOUND.statusCode,
           message: responseConfig.NOT_FOUND.message,
         };
       }
-      await this.userDal.deleteUserById(id);
-      const { examProgresses, userAnalytics, password, created_at, ...result } =
-        userData;
       this.logger.log(`Successfully deleted user from database with id: ${id}`);
-      this.logger.debug(JSON.stringify(result));
+      this.logger.debug(JSON.stringify(userData));
+      return {
+        statusCode: responseConfig.SUCCESS.statusCode,
+        message: responseConfig.SUCCESS.message,
+      };
     } catch (error) {
       this.logger.error(`Failed to delete exam from database with id: ${id}`);
       this.logger.error(error);

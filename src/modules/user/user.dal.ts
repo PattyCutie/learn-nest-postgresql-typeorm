@@ -2,7 +2,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entity/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto, UpdateUserDto } from './dto/createUserDto';
-import { hashPassword } from 'src/utils/hash.utils';
 
 export class UserDal {
   constructor(
@@ -13,23 +12,35 @@ export class UserDal {
   async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
     const newUser = this.userRepo.create(createUserDto);
     const createdUser = await this.userRepo.save(newUser);
-    return createdUser;
+    const { password, ...userData }: UserEntity = createdUser;
+    return userData as UserEntity;
   }
 
   async getAllUser(): Promise<UserEntity[]> {
     const allUsers = await this.userRepo.find({
       order: {
-        created_at: 'ASC',
+        createdAt: 'ASC',
       },
     });
-    return allUsers;
+
+    const result: UserEntity[] = allUsers.map((user) => {
+      const { password, ...userData } = user;
+      return userData as UserEntity;
+    });
+
+    return result;
   }
 
   async getUserById(id: string): Promise<UserEntity | null> {
     const user = await this.userRepo.findOne({
       where: { id },
     });
-    return user;
+    const { password, ...userData } = user;
+    const result = await this.userRepo.save({
+      ...userData,
+    });
+
+    return result;
   }
 
   async updateUserById(
@@ -39,25 +50,25 @@ export class UserDal {
     const user = await this.userRepo.findOne({
       where: { id },
     });
+
     if (!user) {
       return null;
     }
-
-    if (updatedUserDto.password) {
-      const updatedPassword = await hashPassword(updatedUserDto.password);
-      user.password = updatedPassword;
-    }
-
-    if (updatedUserDto.username) {
-      user.username = updatedUserDto.username;
-    }
-
-    await this.userRepo.save(user);
-
-    return user;
+    const { password, ...userData } = user;
+    const result = await this.userRepo.save({
+      ...userData,
+      ...updatedUserDto,
+    });
+    return result;
   }
 
-  async deleteUserById(id: string): Promise<void> {
-    await this.userRepo.delete(id);
+  async deleteUserById(id: string): Promise<boolean> {
+    const result = await this.userRepo.delete({
+      id,
+    });
+    if (result.affected === 0) {
+      return false;
+    }
+    return true;
   }
 }

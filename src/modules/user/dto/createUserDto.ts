@@ -1,4 +1,3 @@
-import { PartialType } from '@nestjs/mapped-types';
 import { IsNotEmpty, IsEmail, MinLength, IsString } from 'class-validator';
 
 export class CreateUserDto {
@@ -17,9 +16,5 @@ export class CreateUserDto {
 export class UpdateUserDto {
   @IsString()
   @IsNotEmpty()
-  username: string;
-
-  @IsNotEmpty()
-  @MinLength(8)
-  password: string;
+  username?: string;
 }

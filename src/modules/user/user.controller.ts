@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from './dto/createUserDto';
 import { UserService } from './user.service';
-import { ExamService } from '../exam/exam.service';
 import { HttpResponse } from 'src/types/http-response';
 
 @Controller('user')

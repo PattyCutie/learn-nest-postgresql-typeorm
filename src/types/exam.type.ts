@@ -1,30 +1,37 @@
-export interface ExamReqForm {
+export interface ExamReq {
+  id: string;
   userId: string;
+  createdAt?: Date;
+  totalTime: number;
   examType?: ExamType;
+  questionTypes: QuestionType;
   subjectVal: SubjectVal;
   section: Section;
   Part: Part;
   topic: Topic;
-  levels: Level[];
-  questionTypes: QuestionType;
+  level: Level;
   duration?: number;
   amount?: number;
+  examResponse?: {
+    [topic: string]: Question;
+  };
 }
-
-export interface ExamRes extends ExamReqForm {
-  createdAt: Date;
-  id: string;
-  questions: Question[];
-}
-
 export interface Question {
   id: string;
   level: Level;
+  part: string;
+  topics: {
+    [key: string]: Topic[];
+  };
   question: string;
   choices: string[];
   correctAnswer: string;
+  explainationEn: string;
+  explainationTh: string;
 }
 
+////////////////////////////////////////////////
+////// Exam details !
 export enum ExamType {
   Actual = 'Actual',
   Practice = 'Practice',
@@ -47,7 +54,8 @@ export enum QuestionType {
 }
 
 ///////////////////////////
-// Need to impro this below maybe there is too complicate mapping??
+// Need to improve this below maybe there is too complicate mapping??
+// Learn more about dynamic types later**
 export type subjectValToeic = 'Toeic';
 export type subjectValBiology = 'Biology';
 

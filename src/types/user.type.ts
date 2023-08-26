@@ -1,21 +1,16 @@
-import { UserAnalyticsEntity } from 'src/entity/user-analytic.entity';
-import { ExamRes } from './exam.type';
-
 export interface IUser {
   id: string;
-  //keyCloakId: string; //add this to table/entity/DTo after connect key cloak
-  created_at: Date;
+  createdAt: Date;
   username: string;
   email: string;
   password: string;
-  //userRole: UserRole; //add this to table/entity/DTo after connect key cloak
-  userProfile?: UserProfile;
+  userRole: UserRole;
 }
 
 export interface UserProfile {
-  //Add more details Later
-  userAnalytic?: UserAnalyticsEntity | null;
-  examReses?: ExamRes[] | null;
+  userId: string;
+  fname: string;
+  lname: string;
 }
 
 //temporary Roles
