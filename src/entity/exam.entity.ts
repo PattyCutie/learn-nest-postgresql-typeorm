@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   OneToMany,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { QuestionEntity } from './question.entity';
 import {
@@ -18,13 +19,14 @@ import {
 } from 'src/types/exam.type';
 import { Database } from 'src/config/db.config';
 import { UserEntity } from './user.entity';
+import { QuestionResDto } from 'src/modules/exam/dto/exam.dto';
 
 @Entity({ name: Database.Table.Exam })
 export class ExamEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ nullable: true })
   userId: string;
 
   @CreateDateColumn({
@@ -50,10 +52,10 @@ export class ExamEntity {
   section: Section;
 
   @Column({ default: 'reading-specific-1' })
-  Part: Part;
+  part: Part;
 
-  @Column({ default: 'Topic 1' })
-  topic: Topic;
+  @Column('json', { default: {} })
+  topics: { [key: string]: Topic[] };
 
   @Column({ default: 'Beginner' })
   level: Level;
@@ -64,9 +66,16 @@ export class ExamEntity {
   @Column({ default: 10 })
   amount?: number;
 
+  //Here is the logic to create the question in the exam
+  // need to fix
+  @Column('json', { nullable: true })
+  examResponse?: QuestionResDto[];
+  ///
   @OneToMany(() => QuestionEntity, (question) => question.exam)
-  examResponse?: QuestionEntity[];
+  @JoinColumn({ name: 'question' })
+  questions: QuestionEntity;
 
-  @ManyToOne(() => UserEntity, (user) => user.exam)
+  @ManyToOne(() => UserEntity, (user) => user.exams)
+  @JoinColumn({ name: 'userId' })
   user: UserEntity;
 }

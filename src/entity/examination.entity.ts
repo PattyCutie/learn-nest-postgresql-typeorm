@@ -16,7 +16,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { QuestionSheetEntity } from './question-sheet.entity';
+import { AnswerSheetEntity } from './answer-sheet.entity';
 import { UserEntity } from './user.entity';
 
 @Entity({ name: Database.Table.Examination })
@@ -24,7 +24,11 @@ export class ExaminationEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column()
   userId: string;
+
+  @Column()
+  examId: string;
 
   @Column()
   totalTime: number;
@@ -33,7 +37,7 @@ export class ExaminationEntity {
   examType: ExamType;
 
   @Column()
-  questionTypes: QuestionType;
+  questionType: QuestionType;
 
   @Column()
   subjectVal: SubjectVal;
@@ -53,15 +57,16 @@ export class ExaminationEntity {
   @Column({ nullable: true })
   duration?: number;
 
-  @Column({ nullable: true }) // Nullable because it's optional in the interface
+  @Column({ nullable: true })
   amount?: number;
 
   @ManyToOne(() => UserEntity, (user) => user.examination)
   user?: UserEntity;
 
   @OneToMany(
-    () => QuestionSheetEntity,
+    () => AnswerSheetEntity,
     (questionsheet) => questionsheet.examination,
   )
-  questionSheet: QuestionSheetEntity[];
+  @JoinColumn({ name: 'examId' })
+  answerSheet: AnswerSheetEntity[];
 }

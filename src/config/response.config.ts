@@ -9,6 +9,16 @@ export default {
     message: 'Success Created Data',
   },
 
+  SUCCESS_UPDATED: {
+    statusCode: 203,
+    message: 'Success Updated Data',
+  },
+
+  SUCCESS_DELETE: {
+    statusCode: 204,
+    message: 'Success Deleted Data',
+  },
+
   INTERNAL_SERVER_ERROR: {
     statusCode: 500,
     message: 'Interval Server Error',

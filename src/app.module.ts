@@ -11,10 +11,10 @@ import { ExamProgressModule } from './modules/exam-progress/exam-progress.module
 import { ExaminationModule } from './modules/examination/examination.module';
 import { QuestionEntity } from './entity/question.entity';
 import { ExamEntity } from './entity/exam.entity';
-import { QuestionSheetEntity } from './entity/question-sheet.entity';
+import { AnswerSheetEntity } from './entity/answer-sheet.entity';
 import { ExaminationEntity } from './entity/examination.entity';
-import { ExamProgressEntity } from './entity/exam-progress';
-import { QuestionProgressEntity } from './entity/question-progress';
+import { ExamProgressEntity } from './entity/exam-progress.entity';
+import { QuestionProgressEntity } from './entity/question-progress.entity';
 
 @Module({
   imports: [
@@ -39,7 +39,7 @@ import { QuestionProgressEntity } from './entity/question-progress';
             ExamEntity,
             QuestionEntity,
             ExaminationEntity,
-            QuestionSheetEntity,
+            AnswerSheetEntity,
             ExamProgressEntity,
             QuestionProgressEntity,
           ],

@@ -8,7 +8,6 @@ import {
   HttpCode,
   Version,
   Delete,
-  Put,
   Patch,
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from './dto/createUserDto';
@@ -24,21 +23,23 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async createUser(
     @Body() createUserDto: CreateUserDto,
-  ): Promise<HttpResponse<void>> {
+  ): Promise<HttpResponse<CreateUserDto>> {
     return this.userService.createUser(createUserDto);
   }
 
   @Version('1')
   @Get()
   @HttpCode(HttpStatus.OK)
-  async getAllUsers(): Promise<HttpResponse<void>> {
+  async getUsers(): Promise<HttpResponse<{ users: CreateUserDto[] }>> {
     return this.userService.getAllUsers();
   }
 
   @Version('1')
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async getUserById(@Param('id') id: string): Promise<HttpResponse<void>> {
+  async getUserById(
+    @Param('id') id: string,
+  ): Promise<HttpResponse<{ users: CreateUserDto }>> {
     return this.userService.getUserById(id);
   }
 
@@ -48,14 +49,16 @@ export class UserController {
   async updateUserById(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<HttpResponse<void>> {
+  ): Promise<HttpResponse<{ users: CreateUserDto }>> {
     return this.userService.updateUserById(id, updateUserDto);
   }
 
   @Version('1')
   @Delete('delete/:id')
   @HttpCode(HttpStatus.OK)
-  async deleteExamById(@Param('id') id: string): Promise<HttpResponse<void>> {
+  async deleteExamById(
+    @Param('id') id: string,
+  ): Promise<HttpResponse<boolean>> {
     return this.userService.deleteUserById(id);
   }
 

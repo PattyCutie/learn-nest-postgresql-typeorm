@@ -9,5 +9,6 @@ import { UserDal } from './user.dal';
   imports: [TypeOrmModule.forFeature([UserEntity])],
   providers: [UserService, UserDal],
   controllers: [UserController],
+  exports: [UserService],
 })
 export class UserModule {}

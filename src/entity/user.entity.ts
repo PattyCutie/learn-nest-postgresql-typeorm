@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -11,7 +12,7 @@ import { Database } from 'src/config/db.config';
 import { hashPassword } from 'src/utils/hash.utils';
 import { ExamEntity } from './exam.entity';
 import { ExaminationEntity } from './examination.entity';
-import { ExamProgressEntity } from './exam-progress';
+import { ExamProgressEntity } from './exam-progress.entity';
 
 @Entity({ name: Database.Table.User })
 export class UserEntity {
@@ -40,7 +41,8 @@ export class UserEntity {
   }
 
   @OneToMany(() => ExamEntity, (exam) => exam.userId)
-  exam?: ExamEntity[];
+  @JoinColumn({ name: 'examId' })
+  exams?: ExamEntity[];
 
   @OneToMany(() => ExaminationEntity, (examination) => examination.user)
   examination?: ExaminationEntity[];

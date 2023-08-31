@@ -6,7 +6,7 @@ export const Database = {
     Exam: 'exam',
     Question: 'question',
     Examination: 'examination',
-    QuestionSheet: 'question_sheet',
+    AnswerSheet: 'answer_sheet',
     ExamProgress: 'exam_progress',
     QuestionProgress: 'question_progress',
   },

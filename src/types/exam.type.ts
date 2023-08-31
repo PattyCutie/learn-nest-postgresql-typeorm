@@ -7,22 +7,23 @@ export interface ExamReq {
   questionTypes: QuestionType;
   subjectVal: SubjectVal;
   section: Section;
-  Part: Part;
-  topic: Topic;
   level: Level;
+  part: Part;
+  topics: Topic[];
   duration?: number;
   amount?: number;
-  examResponse?: {
-    [topic: string]: Question;
-  };
+  examResponse?: Question[];
 }
 export interface Question {
   id: string;
+  examType?: ExamType;
+  questionTypes: QuestionType;
+  subjectVal: SubjectVal;
+  section: Section;
   level: Level;
   part: string;
-  topics: {
-    [key: string]: Topic[];
-  };
+  topics: Topic[];
+
   question: string;
   choices: string[];
   correctAnswer: string;

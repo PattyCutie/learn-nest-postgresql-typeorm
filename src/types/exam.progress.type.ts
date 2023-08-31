@@ -1,18 +1,19 @@
-import { ExamType } from './exam.type';
+import { ExamType, QuestionType } from './exam.type';
 
 export interface ExamProgress {
   id: string;
   userId: string;
   examId: string;
   examType: ExamType;
-  startedAt: Date;
-  completedAt?: Date;
-  totalTimeTaken: number;
+  questionType: QuestionType;
+  startAt: Date;
+  submittedAt: Date;
+  amountOfQA: number;
+  timeSpent: number;
   totalPoints: number;
   grade: string;
-  questionProgress: {
-    [questionId: string]: QuestionProgress;
-  };
+  isFinished: boolean;
+  questionProgress: QuestionProgress[];
 }
 
 export interface QuestionProgress {

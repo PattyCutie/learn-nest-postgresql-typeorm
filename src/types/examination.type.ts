@@ -11,30 +11,28 @@ import {
 export interface Examination {
   id: string;
   userId: string;
+  examId: string;
   totalTime: number;
   examType: ExamType;
-  questionTypes: QuestionType;
+  questionType: QuestionType;
   subjectVal: SubjectVal;
   section: Section;
-  Part: Part;
+  part: Part;
   topic: Topic;
   level: Level;
   duration?: number;
   amount?: number;
-  examResponse: {
-    [questionId: string]: QuestSheet;
-  };
+  examQuestions: AnswerSheet[];
 }
 
-export interface QuestSheet {
+export interface AnswerSheet {
   id: string;
+  examinationId: string;
   timeStart: Date;
   timeAnswer: Date;
   level: Level;
   part: Part;
-  topics: {
-    [topic: string]: Topic[];
-  };
+  topics: Topic[];
   question: string;
   choices: string[];
   selectedChoice?: string | null;

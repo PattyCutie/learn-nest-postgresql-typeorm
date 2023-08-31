@@ -8,6 +8,10 @@
 # Environment variables
 .env
 
+# Generate data in postgres
+sql-script.text
+question-database.json
+
 #docker
 docker-compose.yml
 

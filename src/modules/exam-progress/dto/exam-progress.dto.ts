@@ -1,4 +1,12 @@
-import { IsNotEmpty, IsNumber, IsDateString, IsUUID } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsDateString,
+  IsUUID,
+  IsBoolean,
+  IsString,
+} from 'class-validator';
+import { ExamType, QuestionType } from 'src/types/exam.type';
 
 export class CreateExamProgressDto {
   @IsNotEmpty()
@@ -7,6 +15,12 @@ export class CreateExamProgressDto {
   @IsNotEmpty()
   @IsUUID()
   examId: string;
+
+  @IsNotEmpty()
+  examType: ExamType;
+
+  @IsNotEmpty()
+  questionType: QuestionType;
 
   @IsDateString()
   startAt: Date;
@@ -22,6 +36,12 @@ export class CreateExamProgressDto {
 
   @IsNumber()
   totalPoints: number;
+
+  @IsString()
+  grade: string;
+
+  @IsBoolean()
+  isFinished: boolean;
 }
 
 export class UpdateExamProgressDto {
@@ -44,4 +64,18 @@ export class UpdateExamProgressDto {
   @IsNotEmpty()
   @IsNumber()
   totalPoints: number;
+
+  @IsNotEmpty()
+  @IsBoolean()
+  isFinished: boolean;
+
+  @IsNotEmpty()
+  questionProgress: QuestionProgressDto[];
+}
+
+export class QuestionProgressDto {
+  selectedChoice: string | null;
+  isCorrect: boolean;
+  pointsEarned: number;
+  timeTaken: number;
 }

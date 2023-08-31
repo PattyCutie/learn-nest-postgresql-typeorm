@@ -4,7 +4,6 @@ import {
   IsEnum,
   IsObject,
   IsOptional,
-  IsDateString,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import {
@@ -17,15 +16,9 @@ import {
   Topic,
 } from 'src/types/exam.type';
 
-export class CreateExamReqDTO {
-  @IsNotEmpty()
-  id: string;
-
+export class ExamReqDto {
   @IsNotEmpty()
   userId: string;
-
-  @IsDateString()
-  createdAt?: Date;
 
   @IsNotEmpty()
   totalTime: number;
@@ -45,10 +38,10 @@ export class CreateExamReqDTO {
   section: Section;
 
   @IsNotEmpty()
-  Part: Part;
+  part: Part;
 
   @IsNotEmpty()
-  topic: Topic;
+  topics: { [key: string]: Topic[] };
 
   @IsNotEmpty()
   level: Level;
@@ -63,15 +56,67 @@ export class CreateExamReqDTO {
 
   @IsObject()
   @IsOptional()
-  @Type(() => QuestionDTO)
-  examResponse?: {
-    [topic: string]: QuestionDTO;
-  };
+  @Type(() => QuestionResDto)
+  examResponse?: QuestionResDto[];
 }
 
-export class QuestionDTO {
+export class ExamResDto {
   @IsNotEmpty()
-  id: string;
+  userId: string;
+
+  @IsNotEmpty()
+  totalTime: number;
+
+  @IsEnum(ExamType)
+  @IsOptional()
+  examType?: ExamType;
+
+  @IsEnum(QuestionType)
+  @IsNotEmpty()
+  questionTypes: QuestionType;
+
+  @IsNotEmpty()
+  subjectVal: SubjectVal;
+
+  @IsNotEmpty()
+  section: Section;
+
+  @IsNotEmpty()
+  level: Level;
+
+  @IsNotEmpty()
+  part: Part;
+
+  @IsNotEmpty()
+  topics: Topic[];
+
+  @IsNumber()
+  @IsOptional()
+  duration?: number;
+
+  @IsNumber()
+  @IsOptional()
+  amount?: number;
+
+  @IsOptional()
+  @Type(() => QuestionResDto)
+  examResponse?: QuestionResDto[];
+}
+
+export class QuestionResDto {
+  @IsEnum(ExamType)
+  @IsOptional()
+  examType?: ExamType;
+
+  @IsEnum(QuestionType)
+  @IsNotEmpty()
+  questionTypes: QuestionType;
+
+  @IsNotEmpty()
+  subjectVal: SubjectVal;
+
+  @IsNotEmpty()
+  section: Section;
 
   @IsNotEmpty()
   level: Level;
@@ -80,7 +125,7 @@ export class QuestionDTO {
   part: string;
 
   @IsNotEmpty()
-  topics: { [key: string]: Topic[] };
+  topics: Topic[];
 
   @IsNotEmpty()
   question: string;
@@ -92,8 +137,8 @@ export class QuestionDTO {
   correctAnswer: string;
 
   @IsNotEmpty()
-  explainationEn: string;
+  explanationEn: string;
 
   @IsNotEmpty()
-  explainationTh: string;
+  explanationTh: string;
 }

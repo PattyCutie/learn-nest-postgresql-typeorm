@@ -8,7 +8,7 @@ import {
   OneToMany,
   ManyToOne,
 } from 'typeorm';
-import { QuestionProgressEntity } from './question-progress';
+import { QuestionProgressEntity } from './question-progress.entity';
 import { Database } from 'src/config/db.config';
 import { UserEntity } from './user.entity';
 
@@ -39,6 +39,9 @@ export class ExamProgressEntity {
   totalPoints: number;
 
   @Column()
+  isFininshed: boolean;
+
+  @Column()
   grade: Grade;
 
   @ManyToOne(() => UserEntity, (user) => user.examProgress)
@@ -47,7 +50,6 @@ export class ExamProgressEntity {
   @OneToMany(
     () => QuestionProgressEntity,
     (questionProgress) => questionProgress.examProgress,
-    { cascade: true },
   )
   questionProgress?: QuestionProgressEntity[];
 }

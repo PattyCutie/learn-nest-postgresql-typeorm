@@ -18,3 +18,12 @@ export class UpdateUserDto {
   @IsNotEmpty()
   username?: string;
 }
+
+export class GetUserInFoDto {
+  @IsNotEmpty()
+  username: string;
+
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+}

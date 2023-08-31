@@ -1,6 +1,19 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { ExamEntity } from './exam.entity';
-import { Level, Topic } from 'src/types/exam.type';
+import {
+  ExamType,
+  Level,
+  QuestionType,
+  Section,
+  SubjectVal,
+  Topic,
+} from 'src/types/exam.type';
 import { Database } from 'src/config/db.config';
 
 @Entity({ name: Database.Table.Question })
@@ -8,30 +21,46 @@ export class QuestionEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({ nullable: true })
+  examId: string;
+
+  @Column({ default: 'Practice' })
+  examType: ExamType;
+
   @Column()
+  questionTypes: QuestionType;
+
+  @Column({ default: 'Toeic' })
+  subjectVal: SubjectVal;
+
+  @Column()
+  section: Section;
+
+  @Column({ nullable: true })
   level: Level;
 
-  @Column()
+  @Column({ nullable: true })
   part: string;
 
-  @Column('jsonb')
-  topics: { [key: string]: Topic[] };
+  @Column('json', { nullable: true })
+  topics: Topic[];
 
-  @Column()
+  @Column({ nullable: true })
   question: string;
 
-  @Column('text', { array: true })
+  @Column('json', { default: {} })
   choices: string[];
 
-  @Column()
+  @Column({ nullable: true })
   correctAnswer: string;
 
-  @Column()
-  explainationEn: string;
+  @Column({ nullable: true })
+  explanationEn: string;
 
-  @Column()
-  explainationTh: string;
+  @Column({ nullable: true })
+  explanationTh: string;
 
-  @ManyToOne(() => ExamEntity, (exam) => exam.examResponse)
+  @ManyToOne(() => ExamEntity, (exam) => exam.questions)
+  @JoinColumn({ name: 'exam' })
   exam: ExamEntity;
 }
