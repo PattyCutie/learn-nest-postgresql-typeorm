@@ -9,6 +9,7 @@ import {
 } from './question-option.type';
 export interface ExamReq {
   id: string;
+  userId: string;
   createdAt?: Date;
   subjectVal: SubjectVal;
   examType: ExamType;
@@ -19,11 +20,12 @@ export interface ExamReq {
   level: Level;
   duration: number;
   amount: number;
-  questions: Question[];
+  examQuestions: Question[];
 }
 
 export interface Question {
   id: string;
+  examId: string;
   subjectVal: SubjectVal;
   examType?: ExamType;
   questionTypes: QuestionType;

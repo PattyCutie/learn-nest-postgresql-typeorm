@@ -17,6 +17,7 @@ export class ExamDal {
 
   async createExam(examResDto: DeepPartial<ExamResDto>): Promise<ExamResDto> {
     const examEntity: DeepPartial<ExamEntity> = {
+      userId: examResDto.userId,
       subjectVal: examResDto.subjectVal,
       examType: examResDto.examType,
       questionTypes: examResDto.questionTypes,
@@ -26,14 +27,15 @@ export class ExamDal {
       level: examResDto.level,
       duration: examResDto.duration,
       amount: examResDto.amount,
-      questions: examResDto.questions,
+      examQuestions: examResDto.examQuestions,
     };
 
     const savedExam = await this.examRepo.save(examEntity);
 
-    if (examResDto.questions) {
-      const questionRes = examResDto.questions.map(
+    if (examResDto.examQuestions) {
+      const questionRes = examResDto.examQuestions.map(
         (questionDto: QuestionResDto) => ({
+          examId: savedExam.id,
           subjectVal: questionDto.subjectVal,
           examType: questionDto.examType,
           questionTypes: questionDto.questionTypes,
@@ -51,7 +53,7 @@ export class ExamDal {
 
       const savedQuestionEntities = await this.questionRepo.save(questionRes);
 
-      savedExam.questions = savedQuestionEntities;
+      savedExam.examQuestions = savedQuestionEntities;
     }
 
     return savedExam as ExamResDto;

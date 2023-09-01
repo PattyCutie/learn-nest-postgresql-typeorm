@@ -1,10 +1,4 @@
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsEnum,
-  IsObject,
-  IsOptional,
-} from 'class-validator';
+import { IsNotEmpty, IsNumber, IsEnum, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 import {
   ExamType,
@@ -18,6 +12,9 @@ import {
 import { DeepPartial } from 'typeorm';
 
 export class ExamReqDto {
+  @IsNotEmpty()
+  userId: string;
+
   @IsNotEmpty()
   subjectVal: DeepPartial<SubjectVal>;
 
@@ -52,6 +49,9 @@ export class ExamReqDto {
 
 export class ExamResDto {
   @IsNotEmpty()
+  userId: string;
+
+  @IsNotEmpty()
   subjectVal: DeepPartial<SubjectVal>;
 
   @IsEnum(ExamType)
@@ -84,10 +84,13 @@ export class ExamResDto {
 
   @IsOptional()
   @Type(() => QuestionResDto)
-  questions: DeepPartial<QuestionResDto[]>;
+  examQuestions: DeepPartial<QuestionResDto[]>;
 }
 
 export class QuestionResDto {
+  @IsNotEmpty()
+  examId: string;
+
   @IsNotEmpty()
   subjectVal: DeepPartial<SubjectVal>;
 

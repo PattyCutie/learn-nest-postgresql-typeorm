@@ -9,6 +9,8 @@ import { UserEntity } from './entity/user.entity';
 import { AuthModule } from './modules/user-auth/auth.module';
 import { QuestionEntity } from './entity/question.entity';
 import { ExamEntity } from './entity/exam.entity';
+import { ExaminationService } from './modules/examination/examination.service';
+import { ExaminationModule } from './modules/examination/examination.module';
 
 @Module({
   imports: [
@@ -37,8 +39,9 @@ import { ExamEntity } from './entity/exam.entity';
     AuthModule,
     UserModule,
     ExamModule,
+    ExaminationModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ExaminationService],
 })
 export class AppModule {}

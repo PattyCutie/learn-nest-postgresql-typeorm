@@ -5,7 +5,6 @@ import { ExamDal } from './exam.dal';
 import { ExamHttpService } from 'src/modules/http/http.sevice';
 import responseConfig from 'src/config/response.config';
 import { AxiosResponse } from 'axios';
-import { UpdateUserDto } from '../user/dto/createUserDto';
 
 @Injectable()
 export class ExamService {

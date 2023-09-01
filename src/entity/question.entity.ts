@@ -1,5 +1,12 @@
 import { Database } from 'src/config/db.config';
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import {
   ExamType,
   Level,
@@ -9,11 +16,15 @@ import {
   SubjectVal,
   Topic,
 } from 'src/types/question-option.type';
+import { ExamEntity } from './exam.entity';
 
 @Entity({ name: Database.Table.Question })
 export class QuestionEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ nullable: false })
+  examId: string;
 
   @Column({ default: 'Toeic' })
   subjectVal: SubjectVal;
@@ -50,4 +61,7 @@ export class QuestionEntity {
 
   @Column({ nullable: true })
   explanationTh: string;
+
+  @ManyToOne(() => ExamEntity, (exam) => exam.examQuestions)
+  exam: ExamEntity;
 }

@@ -6,9 +6,9 @@ import {
   Section,
   SubjectVal,
   Topic,
-} from './question-option.type';
+} from 'src/types/question-option.type';
 
-export interface Examination {
+export class ExaminationDto {
   id: string;
   examId: string;
   totalTime: number;
@@ -21,10 +21,9 @@ export interface Examination {
   level: Level;
   duration?: number;
   amount?: number;
-  answerSheet: AnswerSheet[];
+  answerSheet: AnswerSheetDto[];
 }
-
-export interface AnswerSheet {
+export class AnswerSheetDto {
   id: string;
   examinationId: string;
   questionId: string;

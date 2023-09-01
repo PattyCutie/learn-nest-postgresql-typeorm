@@ -1,13 +1,14 @@
-import * as bcrypt from 'bcrypt';
 import {
   BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Database } from 'src/config/db.config';
 import { hashPassword } from 'src/utils/hash.utils';
+import { ExamEntity } from './exam.entity';
 
 @Entity({ name: Database.Table.User })
 export class UserEntity {
@@ -34,4 +35,9 @@ export class UserEntity {
   async hashPassword() {
     this.password = await hashPassword(this.password);
   }
+
+  @OneToMany(() => ExamEntity, (exam) => exam.user, {
+    cascade: true,
+  })
+  exams: ExamEntity[];
 }
