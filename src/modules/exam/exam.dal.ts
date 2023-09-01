@@ -1,8 +1,8 @@
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ExamEntity } from 'src/entity/exam.entity';
-import { Repository } from 'typeorm';
-import { ExamResDto } from './dto/exam.dto';
+import { DeepPartial, Repository } from 'typeorm';
+import { ExamReqDto, ExamResDto, QuestionResDto } from './dto/exam.dto';
 import { QuestionEntity } from 'src/entity/question.entity';
 
 export class ExamDal {
@@ -10,81 +10,70 @@ export class ExamDal {
 
   constructor(
     @InjectRepository(ExamEntity)
-    readonly examReqRepo: Repository<ExamEntity>,
+    readonly examRepo: Repository<ExamEntity>,
     @InjectRepository(QuestionEntity)
-    readonly questionResRepo: Repository<QuestionEntity>,
+    readonly questionRepo: Repository<QuestionEntity>,
   ) {}
 
-  // async createExam(examResDto: ExamResDto): Promise<ExamResDto> {
-  //   const sampleExamRes: ExamResDto = {
-  //     userId: examResDto.userId,
-  //     totalTime: examResDto.totalTime,
-  //     examType: examResDto.examType,
-  //     questionTypes: examResDto.questionTypes,
-  //     subjectVal: examResDto.subjectVal,
-  //     section: examResDto.section,
-  //     part: examResDto.part,
-  //     topics: examResDto.topics,
-  //     level: examResDto.level,
-  //     duration: examResDto.duration,
-  //     amount: examResDto.amount,
-  //     examResponse: examResDto.examResponse,
-  //   };
+  async createExam(examResDto: DeepPartial<ExamResDto>): Promise<ExamResDto> {
+    const examEntity: DeepPartial<ExamEntity> = {
+      subjectVal: examResDto.subjectVal,
+      examType: examResDto.examType,
+      questionTypes: examResDto.questionTypes,
+      section: examResDto.section,
+      part: examResDto.part,
+      topics: examResDto.topics,
+      level: examResDto.level,
+      duration: examResDto.duration,
+      amount: examResDto.amount,
+      questions: examResDto.questions,
+    };
 
-  //   const newExamRes = await this.examReqRepo.save(sampleExamRes);
+    const savedExam = await this.examRepo.save(examEntity);
 
-  //   return newExamRes;
-  // }
+    if (examResDto.questions) {
+      const questionRes = examResDto.questions.map(
+        (questionDto: QuestionResDto) => ({
+          subjectVal: questionDto.subjectVal,
+          examType: questionDto.examType,
+          questionTypes: questionDto.questionTypes,
+          section: questionDto.section,
+          part: questionDto.part,
+          topics: questionDto.topics,
+          level: questionDto.level,
+          question: questionDto.question,
+          choices: questionDto.choices,
+          correctAnswer: questionDto.correctAnswer,
+          explanationEn: questionDto.explanationEn,
+          explanationTh: questionDto.explanationTh,
+        }),
+      );
 
-  // async getAllExams(): Promise<ExamResDto[]> {
-  //   const allExam = await this.examReqRepo.find({
-  //     order: {
-  //       createdAt: 'ASC',
-  //     },
-  //   });
+      const savedQuestionEntities = await this.questionRepo.save(questionRes);
 
-  //   const result: ExamResDto[] = allExam.map((exam) => {
-  //     const { ...examsData }: ExamResDto = exam;
-  //     return examsData;
-  //   });
+      savedExam.questions = savedQuestionEntities;
+    }
 
-  //   return result;
-  // }
+    return savedExam as ExamResDto;
+  }
 
-  // async getExamById(id: string): Promise<ExamResDto | null> {
-  //   const exam = await this.examReqRepo.findOne({
-  //     where: {
-  //       id: id,
-  //     },
-  //   });
+  async getAllExams(): Promise<ExamResDto[]> {
+    const allExam = await this.examRepo.find({
+      order: {
+        createdAt: 'ASC',
+      },
+    });
 
-  //   if (!exam) {
-  //     return null;
-  //   }
-  //   const { ...examData }: ExamResDto = exam;
+    const result: ExamResDto[] = allExam.map((exam) => {
+      const { ...examsData }: ExamResDto = exam;
+      return examsData;
+    });
 
-  //   return examData as ExamResDto;
-  // }
+    return result;
+  }
 
-  // async updateExamById(id: string): Promise<ExamResDto | null> {
-  //   const exam = await this.examReqRepo.findOne({
-  //     where: {
-  //       id: id,
-  //     },
-  //   });
-  //   if (!exam) {
-  //     return null;
-  //   }
-  //   const { ...examData }: ExamResDto = exam;
-  //   const result = await this.examReqRepo.save({
-  //     ...examData,
-  //   });
-
-  //   return result as ExamResDto;
-  // }
-
-  async deleteExamById(id: string): Promise<boolean> {
-    const exam = await this.examReqRepo.findOne({
+  async getExamById(id: string): Promise<ExamResDto | null> {
+    const exam = await this.examRepo.findOne({
       where: {
         id: id,
       },
@@ -93,7 +82,39 @@ export class ExamDal {
     if (!exam) {
       return null;
     }
-    const examTodel = await this.examReqRepo.delete({
+    const { ...examData }: ExamResDto = exam;
+
+    return examData as ExamResDto;
+  }
+
+  async updateExamById(id: string): Promise<ExamResDto | null> {
+    const exam = await this.examRepo.findOne({
+      where: {
+        id: id,
+      },
+    });
+    if (!exam) {
+      return null;
+    }
+    const { ...examData }: ExamResDto = exam;
+    const result = await this.examRepo.save({
+      ...examData,
+    });
+
+    return result as ExamResDto;
+  }
+
+  async deleteExamById(id: string): Promise<boolean> {
+    const exam = await this.examRepo.findOne({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!exam) {
+      return null;
+    }
+    const examTodel = await this.examRepo.delete({
       id,
     });
 

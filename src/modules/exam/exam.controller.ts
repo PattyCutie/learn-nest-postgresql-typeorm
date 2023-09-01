@@ -18,39 +18,39 @@ import { HttpResponse } from 'src/types/http-response';
 export class ExamController {
   constructor(private readonly examService: ExamService) {}
 
-  // @Version('1')
-  // @Post('create')
-  // @HttpCode(HttpStatus.OK)
-  // async createExamWithService(
-  //   @Body() examResDto: ExamResDto,
-  // ): Promise<HttpResponse<{ exams: ExamResDto }>> {
-  //   return await this.examService.createExam(examResDto);
-  // }
+  @Version('1')
+  @Post('create')
+  @HttpCode(HttpStatus.OK)
+  async createExamWithService(
+    @Body() examResDto: ExamResDto,
+  ): Promise<HttpResponse<{ exams: ExamResDto }>> {
+    return await this.examService.createExam(examResDto);
+  }
 
-  // @Version('1')
-  // @Get()
-  // @HttpCode(HttpStatus.OK)
-  // async getUsers(): Promise<HttpResponse<{ exams: ExamResDto[] }>> {
-  //   return this.examService.getAllExams();
-  // }
+  @Version('1')
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  async getUsers(): Promise<HttpResponse<{ exams: ExamResDto[] }>> {
+    return this.examService.getAllExams();
+  }
 
-  // @Version('1')
-  // @Get(':id')
-  // @HttpCode(HttpStatus.OK)
-  // async getExamById(
-  //   @Param('id') id: string,
-  // ): Promise<HttpResponse<ExamResDto>> {
-  //   return this.examService.getExamById(id);
-  // }
+  @Version('1')
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  async getExamById(
+    @Param('id') id: string,
+  ): Promise<HttpResponse<ExamResDto>> {
+    return this.examService.getExamById(id);
+  }
 
-  // @Version('1')
-  // @Patch('update/:id')
-  // @HttpCode(HttpStatus.OK)
-  // async updateUserById(
-  //   @Param('id') id: string,
-  // ): Promise<HttpResponse<ExamResDto>> {
-  //   return this.examService.updateExamById(id);
-  //}
+  @Version('1')
+  @Patch('update/:id')
+  @HttpCode(HttpStatus.OK)
+  async updateUserById(
+    @Param('id') id: string,
+  ): Promise<HttpResponse<ExamResDto>> {
+    return this.examService.updateExamById(id);
+  }
 
   @Version('1')
   @Delete('delete/:id')

@@ -14,37 +14,32 @@ import {
   Section,
   SubjectVal,
   Topic,
-} from 'src/types/exam.type';
+} from 'src/types/question-option.type';
+import { DeepPartial } from 'typeorm';
 
 export class ExamReqDto {
   @IsNotEmpty()
-  userId: string;
-
-  @IsNotEmpty()
-  totalTime: number;
+  subjectVal: DeepPartial<SubjectVal>;
 
   @IsEnum(ExamType)
   @IsOptional()
-  examType?: ExamType;
+  examType?: DeepPartial<ExamType>;
 
   @IsEnum(QuestionType)
   @IsNotEmpty()
-  questionTypes: QuestionType;
+  questionTypes: DeepPartial<QuestionType>;
 
   @IsNotEmpty()
-  subjectVal: SubjectVal;
+  section: DeepPartial<Section>;
 
   @IsNotEmpty()
-  section: Section;
+  part: DeepPartial<Part>;
 
   @IsNotEmpty()
-  part: Part;
+  topics: DeepPartial<Topic[]>;
 
   @IsNotEmpty()
-  topics: { [key: string]: Topic[] };
-
-  @IsNotEmpty()
-  level: Level;
+  level: DeepPartial<Level>;
 
   @IsNumber()
   @IsOptional()
@@ -53,42 +48,31 @@ export class ExamReqDto {
   @IsNumber()
   @IsOptional()
   amount?: number;
-
-  @IsObject()
-  @IsOptional()
-  @Type(() => QuestionResDto)
-  examResponse?: QuestionResDto[];
 }
 
 export class ExamResDto {
   @IsNotEmpty()
-  userId: string;
-
-  @IsNotEmpty()
-  totalTime: number;
+  subjectVal: DeepPartial<SubjectVal>;
 
   @IsEnum(ExamType)
   @IsOptional()
-  examType?: ExamType;
+  examType?: DeepPartial<ExamType>;
 
   @IsEnum(QuestionType)
   @IsNotEmpty()
-  questionTypes: QuestionType;
+  questionTypes: DeepPartial<QuestionType>;
 
   @IsNotEmpty()
-  subjectVal: SubjectVal;
+  section: DeepPartial<Section>;
 
   @IsNotEmpty()
-  section: Section;
+  part: DeepPartial<Part>;
 
   @IsNotEmpty()
-  level: Level;
+  topics: DeepPartial<Topic[]>;
 
   @IsNotEmpty()
-  part: Part;
-
-  @IsNotEmpty()
-  topics: Topic[];
+  level: DeepPartial<Level>;
 
   @IsNumber()
   @IsOptional()
@@ -100,32 +84,32 @@ export class ExamResDto {
 
   @IsOptional()
   @Type(() => QuestionResDto)
-  examResponse?: QuestionResDto[];
+  questions: DeepPartial<QuestionResDto[]>;
 }
 
 export class QuestionResDto {
+  @IsNotEmpty()
+  subjectVal: DeepPartial<SubjectVal>;
+
   @IsEnum(ExamType)
   @IsOptional()
-  examType?: ExamType;
+  examType?: DeepPartial<ExamType>;
 
   @IsEnum(QuestionType)
   @IsNotEmpty()
-  questionTypes: QuestionType;
+  questionTypes: DeepPartial<QuestionType>;
 
   @IsNotEmpty()
-  subjectVal: SubjectVal;
+  section: DeepPartial<Section>;
 
   @IsNotEmpty()
-  section: Section;
+  part: DeepPartial<Part>;
 
   @IsNotEmpty()
-  level: Level;
+  topics: DeepPartial<Topic[]>;
 
   @IsNotEmpty()
-  part: string;
-
-  @IsNotEmpty()
-  topics: Topic[];
+  level: DeepPartial<Level>;
 
   @IsNotEmpty()
   question: string;

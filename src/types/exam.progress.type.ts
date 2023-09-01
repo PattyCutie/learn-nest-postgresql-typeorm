@@ -1,26 +1,27 @@
-import { ExamType, QuestionType } from './exam.type';
+import { ExamType, QuestionType } from './question-option.type';
 
 export interface ExamProgress {
   id: string;
   userId: string;
   examId: string;
+  createdAt: Date;
   examType: ExamType;
   questionType: QuestionType;
   startAt: Date;
-  submittedAt: Date;
   amountOfQA: number;
   timeSpent: number;
   totalPoints: number;
-  grade: string;
+  graded: string;
   isFinished: boolean;
-  questionProgress: QuestionProgress[];
+  questionProgresses: QuestionProgress[];
 }
 
 export interface QuestionProgress {
-  selectedChoice: string | null;
-  isCorrect: boolean;
-  pointsEarned: number;
+  id: string;
+  examProgressId: string;
+  questionId: string;
   timeTaken: number;
+  iscorrected?: boolean;
 }
 
 export enum Grade {

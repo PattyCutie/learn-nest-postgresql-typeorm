@@ -6,7 +6,7 @@ import {
   Section,
   SubjectVal,
   Topic,
-} from './exam.type';
+} from './question-option.type';
 
 export interface Examination {
   id: string;
@@ -28,12 +28,8 @@ export interface Examination {
 export interface AnswerSheet {
   id: string;
   examinationId: string;
+  questionId: string;
   timeStart: Date;
   timeAnswer: Date;
-  level: Level;
-  part: Part;
-  topics: Topic[];
-  question: string;
-  choices: string[];
   selectedChoice?: string | null;
 }

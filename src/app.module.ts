@@ -6,15 +6,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
 import { ExamModule } from './modules/exam/exam.module';
 import { UserEntity } from './entity/user.entity';
-import { AuthModule } from './modules/auth/auth.module';
-import { ExamProgressModule } from './modules/exam-progress/exam-progress.module';
-import { ExaminationModule } from './modules/examination/examination.module';
+import { AuthModule } from './modules/user-auth/auth.module';
 import { QuestionEntity } from './entity/question.entity';
 import { ExamEntity } from './entity/exam.entity';
-import { AnswerSheetEntity } from './entity/answer-sheet.entity';
-import { ExaminationEntity } from './entity/examination.entity';
-import { ExamProgressEntity } from './entity/exam-progress.entity';
-import { QuestionProgressEntity } from './entity/question-progress.entity';
 
 @Module({
   imports: [
@@ -34,15 +28,7 @@ import { QuestionProgressEntity } from './entity/question-progress.entity';
           password: configService.get('POSTGRES_PASSWORD'),
           synchronize: true,
           logging: !isProduction,
-          entities: [
-            UserEntity,
-            ExamEntity,
-            QuestionEntity,
-            ExaminationEntity,
-            AnswerSheetEntity,
-            ExamProgressEntity,
-            QuestionProgressEntity,
-          ],
+          entities: [UserEntity, ExamEntity, QuestionEntity],
         };
       },
       inject: [ConfigService],
@@ -51,8 +37,6 @@ import { QuestionProgressEntity } from './entity/question-progress.entity';
     AuthModule,
     UserModule,
     ExamModule,
-    ExamProgressModule,
-    ExaminationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
