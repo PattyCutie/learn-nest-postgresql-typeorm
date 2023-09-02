@@ -7,7 +7,7 @@ import { UserModule } from './modules/user/user.module';
 import { ExamModule } from './modules/exam/exam.module';
 import { UserEntity } from './entity/user.entity';
 import { AuthModule } from './modules/user-auth/auth.module';
-import { QuestionEntity } from './entity/question.entity';
+import { ExamQuestionEntity } from './entity/examQuestion.entity';
 import { ExamEntity } from './entity/exam.entity';
 import { ExaminationService } from './modules/examination/examination.service';
 import { ExaminationModule } from './modules/examination/examination.module';
@@ -30,7 +30,7 @@ import { ExaminationModule } from './modules/examination/examination.module';
           password: configService.get('POSTGRES_PASSWORD'),
           synchronize: true,
           logging: !isProduction,
-          entities: [UserEntity, ExamEntity, QuestionEntity],
+          entities: [UserEntity, ExamEntity, ExamQuestionEntity],
         };
       },
       inject: [ConfigService],

@@ -4,9 +4,19 @@ import { UserService } from './user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entity/user.entity';
 import { UserDal } from './user.dal';
+import { ExamEntity } from 'src/entity/exam.entity';
+import { ExamQuestionEntity } from 'src/entity/examQuestion.entity';
+import { ExaminationEntity } from 'src/entity/examination.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity])],
+  imports: [
+    TypeOrmModule.forFeature([
+      UserEntity,
+      ExamEntity,
+      ExamQuestionEntity,
+      ExaminationEntity,
+    ]),
+  ],
   providers: [UserService, UserDal],
   controllers: [UserController],
   exports: [UserService],

@@ -18,8 +18,8 @@ import {
 } from 'src/types/question-option.type';
 import { ExamEntity } from './exam.entity';
 
-@Entity({ name: Database.Table.Question })
-export class QuestionEntity {
+@Entity({ name: Database.Table.ExamQuestion })
+export class ExamQuestionEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -62,6 +62,6 @@ export class QuestionEntity {
   @Column({ nullable: true })
   explanationTh: string;
 
-  @ManyToOne(() => ExamEntity, (exam) => exam.examQuestions)
+  @ManyToOne(() => ExamEntity, (exam) => exam.examQuestions, { cascade: true })
   exam: ExamEntity;
 }

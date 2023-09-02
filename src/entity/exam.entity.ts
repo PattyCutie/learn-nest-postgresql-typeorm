@@ -7,7 +7,7 @@ import {
   OneToMany,
   JoinColumn,
 } from 'typeorm';
-import { QuestionEntity } from './question.entity';
+import { ExamQuestionEntity } from './examQuestion.entity';
 import {
   ExamType,
   Level,
@@ -19,7 +19,6 @@ import {
 } from 'src/types/question-option.type';
 import { Database } from 'src/config/db.config';
 import { UserEntity } from './user.entity';
-import { QuestionResDto } from 'src/modules/exam/dto/exam.dto';
 
 @Entity({ name: Database.Table.Exam })
 export class ExamEntity {
@@ -64,11 +63,9 @@ export class ExamEntity {
   amount?: number;
 
   @Column('json')
-  @OneToMany(() => QuestionEntity, (question) => question.exam, {
-    cascade: true,
-  })
-  examQuestions: QuestionEntity[];
+  @OneToMany(() => ExamQuestionEntity, (examQuestion) => examQuestion.exam)
+  examQuestions: ExamQuestionEntity[];
 
-  @ManyToOne(() => UserEntity, (user) => user.exams)
+  @ManyToOne(() => UserEntity, (user) => user.exams, { cascade: true })
   user: UserEntity;
 }

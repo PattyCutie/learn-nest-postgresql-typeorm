@@ -4,7 +4,7 @@ export const Database = {
   Table: {
     User: 'user',
     Exam: 'exam',
-    Question: 'question',
+    ExamQuestion: 'exam_question',
     Examination: 'examination',
     AnswerSheet: 'answer_sheet',
     ExamProgress: 'exam_progress',

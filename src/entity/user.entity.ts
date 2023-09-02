@@ -36,8 +36,6 @@ export class UserEntity {
     this.password = await hashPassword(this.password);
   }
 
-  @OneToMany(() => ExamEntity, (exam) => exam.user, {
-    cascade: true,
-  })
+  @OneToMany(() => ExamEntity, (exam) => exam.user)
   exams: ExamEntity[];
 }

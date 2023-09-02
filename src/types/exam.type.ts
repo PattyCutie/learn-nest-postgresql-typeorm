@@ -20,10 +20,10 @@ export interface ExamReq {
   level: Level;
   duration: number;
   amount: number;
-  examQuestions: Question[];
+  examQuestions: ExamQuestion[];
 }
 
-export interface Question {
+export interface ExamQuestion {
   id: string;
   examId: string;
   subjectVal: SubjectVal;

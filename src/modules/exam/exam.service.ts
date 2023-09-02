@@ -106,7 +106,7 @@ export class ExamService {
           message: responseConfig.NOT_FOUND.message,
         };
       }
-      this.logger.log(`Successfully update user from database with id: ${id}`);
+      this.logger.log(`Successfully update exam from database with id: ${id}`);
       this.logger.debug(JSON.stringify(updateUserById));
       return {
         statusCode: responseConfig.SUCCESS_UPDATED.statusCode,
@@ -114,7 +114,7 @@ export class ExamService {
         data: updateUserById,
       };
     } catch (error) {
-      this.logger.error(`Failed to update user from database with id: ${id}`);
+      this.logger.error(`Failed to update exam from database with id: ${id}`);
       this.logger.error(error);
       return {
         statusCode: responseConfig.INTERNAL_SERVER_ERROR.statusCode,
@@ -132,7 +132,7 @@ export class ExamService {
           message: responseConfig.NOT_FOUND.message,
         };
       }
-      this.logger.log(`Successfully deleted user from database with id: ${id}`);
+      this.logger.log(`Successfully deleted exam from database with id: ${id}`);
       this.logger.debug(JSON.stringify(userData));
       return {
         statusCode: responseConfig.SUCCESS_DELETE.statusCode,

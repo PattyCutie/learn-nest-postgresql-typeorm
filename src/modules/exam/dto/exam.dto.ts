@@ -83,11 +83,11 @@ export class ExamResDto {
   amount?: number;
 
   @IsOptional()
-  @Type(() => QuestionResDto)
-  examQuestions: DeepPartial<QuestionResDto[]>;
+  @Type(() => ExamQuestionResDto)
+  examQuestions: DeepPartial<ExamQuestionResDto[]>;
 }
 
-export class QuestionResDto {
+export class ExamQuestionResDto {
   @IsNotEmpty()
   examId: string;
 

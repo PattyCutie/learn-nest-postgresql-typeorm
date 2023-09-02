@@ -3,7 +3,7 @@ import { ExamService } from './exam.service';
 import { ExamController } from './exam.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ExamEntity } from 'src/entity/exam.entity';
-import { QuestionEntity } from 'src/entity/question.entity';
+import { ExamQuestionEntity } from 'src/entity/examQuestion.entity';
 import { HttpServiceModule } from 'src/modules/http/http.module';
 import { ExamDal } from './exam.dal';
 import { UserEntity } from 'src/entity/user.entity';
@@ -12,10 +12,11 @@ import { UserService } from '../user/user.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ExamEntity, QuestionEntity, UserEntity]),
+    TypeOrmModule.forFeature([ExamEntity, ExamQuestionEntity, UserEntity]),
     HttpServiceModule,
   ],
-  providers: [ExamService, ExamDal, UserDal, UserService],
+  providers: [ExamService, ExamDal, UserService, UserDal],
   controllers: [ExamController],
+  exports: [ExamService],
 })
 export class ExamModule {}
