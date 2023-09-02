@@ -7,6 +7,7 @@ import { UserDal } from './user.dal';
 import { ExamEntity } from 'src/entity/exam.entity';
 import { ExamQuestionEntity } from 'src/entity/examQuestion.entity';
 import { ExaminationEntity } from 'src/entity/examination.entity';
+import { AnswerSheetEntity } from 'src/entity/answerSheet.entity';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ExaminationEntity } from 'src/entity/examination.entity';
       ExamEntity,
       ExamQuestionEntity,
       ExaminationEntity,
+      AnswerSheetEntity,
     ]),
   ],
   providers: [UserService, UserDal],

@@ -9,6 +9,8 @@ import {
 import { Database } from 'src/config/db.config';
 import { hashPassword } from 'src/utils/hash.utils';
 import { ExamEntity } from './exam.entity';
+import { ExaminationEntity } from './examination.entity';
+import { Examination } from 'src/types/examination.type';
 
 @Entity({ name: Database.Table.User })
 export class UserEntity {
@@ -38,4 +40,7 @@ export class UserEntity {
 
   @OneToMany(() => ExamEntity, (exam) => exam.user)
   exams: ExamEntity[];
+
+  @OneToMany(() => ExaminationEntity, (examination) => examination.user)
+  examinations: Examination[];
 }

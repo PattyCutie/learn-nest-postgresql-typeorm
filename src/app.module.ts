@@ -11,6 +11,8 @@ import { ExamQuestionEntity } from './entity/examQuestion.entity';
 import { ExamEntity } from './entity/exam.entity';
 import { ExaminationService } from './modules/examination/examination.service';
 import { ExaminationModule } from './modules/examination/examination.module';
+import { ExaminationEntity } from './entity/examination.entity';
+import { AnswerSheetEntity } from './entity/answerSheet.entity';
 
 @Module({
   imports: [
@@ -30,7 +32,13 @@ import { ExaminationModule } from './modules/examination/examination.module';
           password: configService.get('POSTGRES_PASSWORD'),
           synchronize: true,
           logging: !isProduction,
-          entities: [UserEntity, ExamEntity, ExamQuestionEntity],
+          entities: [
+            UserEntity,
+            ExamEntity,
+            ExamQuestionEntity,
+            ExaminationEntity,
+            AnswerSheetEntity,
+          ],
         };
       },
       inject: [ConfigService],

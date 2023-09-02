@@ -19,6 +19,8 @@ import {
 } from 'src/types/question-option.type';
 import { Database } from 'src/config/db.config';
 import { UserEntity } from './user.entity';
+import { Examination } from 'src/types/examination.type';
+import { ExaminationEntity } from './examination.entity';
 
 @Entity({ name: Database.Table.Exam })
 export class ExamEntity {
@@ -65,6 +67,12 @@ export class ExamEntity {
   @Column('json')
   @OneToMany(() => ExamQuestionEntity, (examQuestion) => examQuestion.exam)
   examQuestions: ExamQuestionEntity[];
+
+  @Column('json', { nullable: true })
+  @OneToMany(() => ExaminationEntity, (examination) => examination.user, {
+    cascade: true,
+  })
+  examinations?: Examination[];
 
   @ManyToOne(() => UserEntity, (user) => user.exams, { cascade: true })
   user: UserEntity;

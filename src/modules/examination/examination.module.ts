@@ -12,12 +12,13 @@ import { ExamService } from '../exam/exam.service';
 import { ExamDal } from '../exam/exam.dal';
 import { ExamEntity } from 'src/entity/exam.entity';
 import { ExamQuestionEntity } from 'src/entity/examQuestion.entity';
+import { AnswerSheetEntity } from 'src/entity/answerSheet.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       ExaminationEntity,
-      //   AnswerSheetEntity,
+      AnswerSheetEntity,
       UserEntity,
       ExamEntity,
       ExamQuestionEntity,
