@@ -15,10 +15,10 @@ export class ExaminationEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('uuid', { nullable: false })
+  @Column({ nullable: false })
   userId: string;
 
-  @Column('uuid', { nullable: false })
+  @Column({ nullable: false })
   examId: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

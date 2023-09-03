@@ -19,7 +19,7 @@ export class ExamDal {
     const examEntity: DeepPartial<ExamEntity> = {
       userId: examResDto.userId,
       subjectVal: examResDto.subjectVal,
-      examType: examResDto.examType,
+      examTypes: examResDto.examType,
       questionTypes: examResDto.questionTypes,
       section: examResDto.section,
       part: examResDto.part,
@@ -37,7 +37,7 @@ export class ExamDal {
         (questionResDto: ExamQuestionResDto) => ({
           examId: savedExam.id,
           subjectVal: questionResDto.subjectVal,
-          examType: questionResDto.examType,
+          examTypes: questionResDto.examTypes,
           questionTypes: questionResDto.questionTypes,
           section: questionResDto.section,
           part: questionResDto.part,

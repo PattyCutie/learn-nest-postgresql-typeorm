@@ -50,6 +50,6 @@ import { AnswerSheetEntity } from './entity/answerSheet.entity';
     ExaminationModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ExaminationService],
+  providers: [AppService],
 })
 export class AppModule {}

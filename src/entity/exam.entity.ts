@@ -41,9 +41,9 @@ export class ExamEntity {
   subjectVal: SubjectVal;
 
   @Column({ default: 'Practice' })
-  examType: ExamType;
+  examTypes: ExamType;
 
-  @Column()
+  @Column({ default: 'MultiChoice' })
   questionTypes: QuestionType;
 
   @Column({ default: 'Toeic' })

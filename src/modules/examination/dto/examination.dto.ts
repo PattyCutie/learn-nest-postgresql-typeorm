@@ -1,17 +1,57 @@
-export class ExaminationDto {
-  id: string;
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsBoolean,
+  IsDate,
+} from 'class-validator';
+
+export class CreateExaminateDto {
+  @IsNotEmpty()
+  @IsString()
   userId: string;
+
+  @IsNotEmpty()
+  @IsString()
   examId: string;
-  createdAt: Date;
+
+  @IsDate()
+  @IsOptional()
   submittedAt: Date;
-  answerSheet: AnswerSheetDto[];
+
+  @IsNotEmpty()
+  answerSheets: AnswerSheetDto[];
 }
+
 export class AnswerSheetDto {
-  id: string;
+  @IsNotEmpty()
+  @IsString()
   examinationId: string;
+
+  @IsNotEmpty()
+  @IsString()
   questionId: string;
-  timeStart?: Date;
-  timeAnswer?: Date;
+
+  @IsDate()
+  timeStart: Date;
+
+  @IsDate()
+  timeAnswer: Date;
+
+  @IsOptional()
+  @IsString()
   selectedChoice?: string | null;
+
+  @IsOptional()
+  @IsBoolean()
   isCorrect?: boolean;
+}
+
+export class SubmitExamAnswerDto {
+  @IsNotEmpty()
+  @IsString()
+  examId: string;
+
+  @IsDate()
+  submittedAt: Date;
 }

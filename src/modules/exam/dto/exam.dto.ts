@@ -96,7 +96,7 @@ export class ExamQuestionResDto {
 
   @IsEnum(ExamType)
   @IsOptional()
-  examType?: DeepPartial<ExamType>;
+  examTypes?: DeepPartial<ExamType>;
 
   @IsEnum(QuestionType)
   @IsNotEmpty()
