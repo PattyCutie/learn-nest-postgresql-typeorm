@@ -24,7 +24,7 @@ export class ExamReqDto {
 
   @IsEnum(QuestionType)
   @IsNotEmpty()
-  questionTypes: DeepPartial<QuestionType>;
+  questionType: DeepPartial<QuestionType>;
 
   @IsNotEmpty()
   section: DeepPartial<Section>;
@@ -60,7 +60,7 @@ export class ExamResDto {
 
   @IsEnum(QuestionType)
   @IsNotEmpty()
-  questionTypes: DeepPartial<QuestionType>;
+  questionType: DeepPartial<QuestionType>;
 
   @IsNotEmpty()
   section: DeepPartial<Section>;
@@ -96,11 +96,11 @@ export class ExamQuestionResDto {
 
   @IsEnum(ExamType)
   @IsOptional()
-  examTypes?: DeepPartial<ExamType>;
+  examType?: DeepPartial<ExamType>;
 
   @IsEnum(QuestionType)
   @IsNotEmpty()
-  questionTypes: DeepPartial<QuestionType>;
+  questionType: DeepPartial<QuestionType>;
 
   @IsNotEmpty()
   section: DeepPartial<Section>;

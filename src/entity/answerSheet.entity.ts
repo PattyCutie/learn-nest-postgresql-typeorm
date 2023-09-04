@@ -13,22 +13,18 @@ export class AnswerSheetEntity {
   @Column('uuid')
   questionId: string;
 
-  @Column('timestamp')
+  @Column({ type: 'timestamp', nullable: true })
   timeStart?: Date;
 
-  @Column('timestamp')
+  @Column({ type: 'timestamp', nullable: true })
   timeAnswer?: Date;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ nullable: true })
   selectedChoice?: string;
 
-  @Column('boolean')
+  @Column({ type: 'boolean', nullable: true })
   isCorrect?: boolean;
 
-  @ManyToOne(
-    () => ExaminationEntity,
-    (examination) => examination.answerSheets,
-    { cascade: true },
-  )
+  @ManyToOne(() => ExaminationEntity, (examination) => examination.answerSheets)
   examination: ExaminationEntity;
 }

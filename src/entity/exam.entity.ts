@@ -6,6 +6,7 @@ import {
   ManyToOne,
   OneToMany,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { ExamQuestionEntity } from './examQuestion.entity';
 import {
@@ -41,12 +42,12 @@ export class ExamEntity {
   subjectVal: SubjectVal;
 
   @Column({ default: 'Practice' })
-  examTypes: ExamType;
+  examType: ExamType;
 
   @Column({ default: 'MultiChoice' })
-  questionTypes: QuestionType;
+  questionType: QuestionType;
 
-  @Column({ default: 'Toeic' })
+  @Column({ default: 'reading' })
   section: Section;
 
   @Column({ default: 'reading-specific-1' })
@@ -69,11 +70,9 @@ export class ExamEntity {
   examQuestions: ExamQuestionEntity[];
 
   @Column('json', { nullable: true })
-  @OneToMany(() => ExaminationEntity, (examination) => examination.user, {
-    cascade: true,
-  })
+  @OneToOne(() => ExaminationEntity, (examination) => examination.exam)
   examinations?: Examination[];
 
-  @ManyToOne(() => UserEntity, (user) => user.exams, { cascade: true })
+  @ManyToOne(() => UserEntity, (user) => user.exams)
   user: UserEntity;
 }

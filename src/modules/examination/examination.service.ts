@@ -1,6 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ExaminationDal } from './examination.dal';
-import { CreateExaminateDto, SubmitExamAnswerDto } from './dto/examination.dto';
+import {
+  AnswerSheetDto,
+  CreateExaminateDto,
+  SubmitExamAnswerDto,
+} from './dto/examination.dto';
 import { HttpResponse } from 'src/types/http-response';
 import { ExamQuestionResDto } from '../exam/dto/exam.dto';
 import responseConfig from 'src/config/response.config';
@@ -12,14 +16,14 @@ export class ExaminationService {
 
   async createExamination(
     createExaminateDto: CreateExaminateDto,
-    examQuestionDto: ExamQuestionResDto,
+    answerSheetDto: AnswerSheetDto,
   ): Promise<HttpResponse<{ examinate: SubmitExamAnswerDto }>> {
     try {
       const result = await this.examinateDal.createExamination(
         createExaminateDto,
-        examQuestionDto,
+        answerSheetDto,
       );
-      this.logger.log('Successfully create examination to database');
+      this.logger.log('Successfully create examination');
       this.logger.debug(JSON.stringify(result));
       return {
         statusCode: responseConfig.SUCCESS.statusCode,

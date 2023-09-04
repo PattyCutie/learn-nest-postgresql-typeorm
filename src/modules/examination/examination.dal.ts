@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AnswerSheetEntity } from 'src/entity/answerSheet.entity';
 import { ExaminationEntity } from 'src/entity/examination.entity';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import {
   AnswerSheetDto,
   CreateExaminateDto,
@@ -11,7 +11,6 @@ import {
 import { ExamQuestionResDto, ExamResDto } from '../exam/dto/exam.dto';
 import { ExamEntity } from 'src/entity/exam.entity';
 import { ExamQuestionEntity } from 'src/entity/examQuestion.entity';
-import { QuestionType } from 'src/types/question-option.type';
 
 @Injectable()
 export class ExaminationDal {
@@ -30,53 +29,31 @@ export class ExaminationDal {
 
   async createExamination(
     createExaminateDto: CreateExaminateDto,
-    examQuestionDto: ExamQuestionResDto,
-  ): Promise<SubmitExamAnswerDto> {
-    const { userId, examId, answerSheets } = createExaminateDto;
-    this.logger.debug(createExaminateDto.examId, 'The Examination has begun');
-    const examination = this.examinateRepo.create({
-      userId,
-      examId,
-    });
-    examination.answerSheets = [];
-    let score = 0;
-
-    for (const answer of answerSheets) {
-      const isCorrect = this.isCorrectAnswer(answer, examQuestionDto);
-      score += isCorrect ? 1 : 0;
-      this.logger.debug(
-        `Question ID: ${answer.questionId}, Is Correct: ${isCorrect}, Score: ${score}`,
-      );
-      const answerSheet = this.anwerSheetRepo.create({
-        examinationId: examination.id,
-        questionId: answer.questionId,
-        timeStart: answer.timeStart,
-        timeAnswer: answer.timeAnswer,
-        selectedChoice: answer.selectedChoice,
-        isCorrect,
-      });
-
-      examination.answerSheets.push(answerSheet);
-    }
-    const saveExaminate = this.examinateRepo.save(examination);
-    this.logger.log(JSON.stringify(saveExaminate));
-    return { ...saveExaminate, score };
-  }
-
-  private isCorrectAnswer(
     answerSheetDto: AnswerSheetDto,
-    examQuestionsDto: ExamQuestionResDto,
-  ): boolean {
-    if (examQuestionsDto.questionTypes === QuestionType.MultipleChoice) {
-      const correctAnswer = examQuestionsDto.choices?.find(
-        (choice) => choice.match,
+  ): Promise<SubmitExamAnswerDto> {
+    const examinationEntity: DeepPartial<ExaminationEntity> = {
+      userId: createExaminateDto.userId,
+      examId: createExaminateDto.examId,
+      submittedAt: createExaminateDto.submittedAt,
+      answerSheets: createExaminateDto.answerSheets,
+    };
+
+    const saveExamitaion = await this.examinateRepo.save(examinationEntity);
+
+    if (createExaminateDto.answerSheets) {
+      const answerSheet = createExaminateDto.answerSheets.map(
+        (ans: AnswerSheetDto) => ({
+          examinationId: saveExamitaion.id,
+          questionId: ans.questionId,
+          timestart: ans.timeStart,
+          timeAnswer: ans.timeAnswer,
+          selectedChoice: ans.selectedChoice,
+          isCorrect: ans.isCorrect,
+        }),
       );
-      this.logger.log(correctAnswer);
-      return true;
+      const saveExamitaionAnswer = await this.anwerSheetRepo.save(answerSheet);
+      saveExamitaion.answerSheets = saveExamitaionAnswer;
     }
-    this.logger.debug(answerSheetDto, examQuestionsDto);
-    return answerSheetDto.selectedChoice === examQuestionsDto.correctAnswer;
+    return saveExamitaion as SubmitExamAnswerDto;
   }
 }
-/// start here//
-/// Need a new logic for calculating score

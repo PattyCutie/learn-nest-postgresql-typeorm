@@ -32,10 +32,10 @@ export class ExamQuestionEntity {
   @Column({ default: 'Practice' })
   examType: ExamType;
 
-  @Column()
-  questionTypes: QuestionType;
+  @Column({ default: 'Multichoice' })
+  questionType: QuestionType;
 
-  @Column({ default: 'Toeic' })
+  @Column({ default: 'reading' })
   section: Section;
 
   @Column({ default: 'reading-specific-1' })
@@ -62,6 +62,8 @@ export class ExamQuestionEntity {
   @Column({ nullable: true })
   explanationTh: string;
 
-  @ManyToOne(() => ExamEntity, (exam) => exam.examQuestions, { cascade: true })
+  @ManyToOne(() => ExamEntity, (exam) => exam.examQuestions, {
+    onDelete: 'CASCADE',
+  })
   exam: ExamEntity;
 }

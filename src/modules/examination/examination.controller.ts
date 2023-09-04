@@ -6,10 +6,14 @@ import {
   Post,
   Version,
 } from '@nestjs/common';
-import { ExamQuestionResDto, ExamResDto } from '../exam/dto/exam.dto';
+import { ExamQuestionResDto } from '../exam/dto/exam.dto';
 import { HttpResponse } from 'src/types/http-response';
 import { ExaminationService } from './examination.service';
-import { CreateExaminateDto, SubmitExamAnswerDto } from './dto/examination.dto';
+import {
+  AnswerSheetDto,
+  CreateExaminateDto,
+  SubmitExamAnswerDto,
+} from './dto/examination.dto';
 
 @Controller('examination')
 export class ExaminationController {
@@ -20,11 +24,11 @@ export class ExaminationController {
   @HttpCode(HttpStatus.OK)
   async createExamWithService(
     @Body() createExaminateDto: CreateExaminateDto,
-    examQuestionDto: ExamQuestionResDto,
+    answerSheetDto: AnswerSheetDto,
   ): Promise<HttpResponse<{ examinate: SubmitExamAnswerDto }>> {
     return await this.examinateService.createExamination(
       createExaminateDto,
-      examQuestionDto,
+      answerSheetDto,
     );
   }
 }

@@ -50,8 +50,16 @@ export class AnswerSheetDto {
 export class SubmitExamAnswerDto {
   @IsNotEmpty()
   @IsString()
+  userId: string;
+
+  @IsNotEmpty()
+  @IsString()
   examId: string;
 
   @IsDate()
+  @IsOptional()
   submittedAt: Date;
+
+  @IsNotEmpty()
+  answerSheets: AnswerSheetDto[];
 }

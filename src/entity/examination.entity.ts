@@ -27,7 +27,9 @@ export class ExaminationEntity {
   @Column({ type: 'timestamp', nullable: true })
   submittedAt: Date;
 
-  @ManyToOne(() => ExamEntity, (exam) => exam.examinations)
+  @ManyToOne(() => ExamEntity, (exam) => exam.examinations, {
+    onDelete: 'CASCADE',
+  })
   exam: ExamEntity[];
 
   @Column('json')

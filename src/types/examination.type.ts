@@ -4,7 +4,7 @@ export interface Examination {
   examId: string;
   createdAt: Date;
   submittedAt?: Date;
-  answerSheet?: AnswerSheet[];
+  answerSheets?: AnswerSheet[];
 }
 
 export interface AnswerSheet {

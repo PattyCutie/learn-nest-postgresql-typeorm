@@ -19,8 +19,8 @@ export class ExamDal {
     const examEntity: DeepPartial<ExamEntity> = {
       userId: examResDto.userId,
       subjectVal: examResDto.subjectVal,
-      examTypes: examResDto.examType,
-      questionTypes: examResDto.questionTypes,
+      examType: examResDto.examType,
+      questionType: examResDto.questionType,
       section: examResDto.section,
       part: examResDto.part,
       topics: examResDto.topics,
@@ -37,8 +37,8 @@ export class ExamDal {
         (questionResDto: ExamQuestionResDto) => ({
           examId: savedExam.id,
           subjectVal: questionResDto.subjectVal,
-          examTypes: questionResDto.examTypes,
-          questionTypes: questionResDto.questionTypes,
+          examType: questionResDto.examType,
+          questionType: questionResDto.questionType,
           section: questionResDto.section,
           part: questionResDto.part,
           topics: questionResDto.topics,
@@ -51,9 +51,9 @@ export class ExamDal {
         }),
       );
 
-      const savedExamQuestionsRepo = await this.questionRepo.save(questionRes);
+      const savedExamQuestions = await this.questionRepo.save(questionRes);
 
-      savedExam.examQuestions = savedExamQuestionsRepo;
+      savedExam.examQuestions = savedExamQuestions;
     }
 
     return savedExam as ExamResDto;
@@ -92,7 +92,9 @@ export class ExamDal {
   }
 
   // fix this later after Main data base Question library is ready /////
-  // this shound be the function for prouser who wanted to re create new exam /////
+  // Create new DTO for update // But shall we allow user to update exam details ?
+  // or better just delete and/ or send a new requestion for new set of exam
+  // this should be the function for pro user or sudo user who wanted to recreate new exam by updating parameters/////
   async updateExamById(id: string): Promise<ExamResDto | null> {
     const exam = await this.examRepo.findOne({
       where: {
@@ -109,9 +111,9 @@ export class ExamDal {
 
     return result as ExamResDto;
   }
+  /////////////////
 
   async deleteExamById(id: string): Promise<boolean> {
-    // Find the exam by ID and load the examQuestions relationship
     const exam = await this.examRepo.findOne({
       where: { id },
       relations: ['examQuestions'],
