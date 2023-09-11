@@ -4,32 +4,50 @@ import {
   IsString,
   IsBoolean,
   IsDate,
+  IsUUID,
 } from 'class-validator';
 
 export class CreateExaminateDto {
+  // @IsNotEmpty()
+  // @IsUUID()
+  // userId: string;
+
   @IsNotEmpty()
-  @IsString()
+  @IsUUID()
+  examId: string;
+
+  // // @IsDate()
+  // // @IsOptional()
+  // // submittedAt?: Date;
+
+  @IsNotEmpty()
+  answerSheets?: AnswerSheetDto[];
+}
+
+export class ResExaminationDto {
+  @IsNotEmpty()
+  @IsUUID()
   userId: string;
 
   @IsNotEmpty()
-  @IsString()
+  @IsUUID()
   examId: string;
 
-  @IsDate()
-  @IsOptional()
-  submittedAt: Date;
+  // @IsDate()
+  // @IsOptional()
+  // submittedAt?: Date;
 
   @IsNotEmpty()
-  answerSheets: AnswerSheetDto[];
+  answerSheets?: AnswerSheetDto[];
 }
 
 export class AnswerSheetDto {
   @IsNotEmpty()
-  @IsString()
+  @IsUUID()
   examinationId: string;
 
   @IsNotEmpty()
-  @IsString()
+  @IsUUID()
   questionId: string;
 
   @IsDate()
@@ -44,20 +62,19 @@ export class AnswerSheetDto {
 
   @IsOptional()
   @IsBoolean()
-  isCorrect?: boolean;
+  isCorrect?: number;
 }
 
 export class SubmitExamAnswerDto {
-  @IsNotEmpty()
-  @IsString()
-  userId: string;
+  // @IsNotEmpty()
+  // @IsUUID()
+  // userId: string;
 
   @IsNotEmpty()
-  @IsString()
+  @IsUUID()
   examId: string;
 
   @IsDate()
-  @IsOptional()
   submittedAt: Date;
 
   @IsNotEmpty()

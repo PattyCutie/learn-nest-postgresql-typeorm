@@ -12,15 +12,15 @@ import {
 import { DeepPartial } from 'typeorm';
 
 export class ExamReqDto {
-  @IsNotEmpty()
-  userId: string;
+  // @IsUUID()
+  // @IsNotEmpty()
+  // userId: string;
 
   @IsNotEmpty()
   subjectVal: DeepPartial<SubjectVal>;
 
   @IsEnum(ExamType)
-  @IsOptional()
-  examType?: DeepPartial<ExamType>;
+  examType: DeepPartial<ExamType>;
 
   @IsEnum(QuestionType)
   @IsNotEmpty()
@@ -48,8 +48,9 @@ export class ExamReqDto {
 }
 
 export class ExamResDto {
-  @IsNotEmpty()
-  userId: string;
+  // @IsUUID()
+  // @IsNotEmpty()
+  // userId: string;
 
   @IsNotEmpty()
   subjectVal: DeepPartial<SubjectVal>;
@@ -88,8 +89,11 @@ export class ExamResDto {
 }
 
 export class ExamQuestionResDto {
-  @IsNotEmpty()
-  examId: string;
+  // @IsNotEmpty()
+  // @IsUUID()
+  // examId: string;
+  @IsOptional()
+  serialNumber?: number;
 
   @IsNotEmpty()
   subjectVal: DeepPartial<SubjectVal>;
@@ -118,14 +122,50 @@ export class ExamQuestionResDto {
   question: string;
 
   @IsNotEmpty()
+  images?: string[];
+
+  @IsNotEmpty()
+  audioOutput?: string[];
+
+  @IsNotEmpty()
   choices: string[];
 
   @IsNotEmpty()
-  correctAnswer: string;
+  correctAnswer: string[];
 
   @IsNotEmpty()
   explanationEn: string;
 
   @IsNotEmpty()
   explanationTh: string;
+}
+
+export class UpDateExamResDto {
+  @IsEnum(ExamType)
+  @IsOptional()
+  examType?: DeepPartial<ExamType>;
+}
+
+export class UpdateExamResult {
+  @IsOptional()
+  submittedAt?: Date;
+
+  @IsNumber()
+  @IsOptional()
+  totalScores?: number;
+}
+
+export class UpdateExamAnswerDto {
+  @IsOptional()
+  timeStart?: Date;
+
+  @IsOptional()
+  timeAnswer?: Date;
+
+  @IsOptional()
+  selectedChoice?: string[] | null;
+
+  @IsNumber()
+  @IsOptional()
+  isCorrect?: number;
 }

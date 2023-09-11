@@ -9,10 +9,6 @@ import { UserEntity } from './entity/user.entity';
 import { AuthModule } from './modules/user-auth/auth.module';
 import { ExamQuestionEntity } from './entity/examQuestion.entity';
 import { ExamEntity } from './entity/exam.entity';
-import { ExaminationService } from './modules/examination/examination.service';
-import { ExaminationModule } from './modules/examination/examination.module';
-import { ExaminationEntity } from './entity/examination.entity';
-import { AnswerSheetEntity } from './entity/answerSheet.entity';
 
 @Module({
   imports: [
@@ -32,13 +28,7 @@ import { AnswerSheetEntity } from './entity/answerSheet.entity';
           password: configService.get('POSTGRES_PASSWORD'),
           synchronize: true,
           logging: !isProduction,
-          entities: [
-            UserEntity,
-            ExamEntity,
-            ExamQuestionEntity,
-            ExaminationEntity,
-            AnswerSheetEntity,
-          ],
+          entities: [UserEntity, ExamEntity, ExamQuestionEntity],
         };
       },
       inject: [ConfigService],
@@ -47,7 +37,6 @@ import { AnswerSheetEntity } from './entity/answerSheet.entity';
     AuthModule,
     UserModule,
     ExamModule,
-    ExaminationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

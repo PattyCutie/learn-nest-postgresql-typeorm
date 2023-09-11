@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ExamReqDto, ExamResDto } from './dto/exam.dto';
+import { ExamReqDto, ExamResDto, UpDateExamResDto } from './dto/exam.dto';
 import { HttpResponse } from 'src/types/http-response';
 import { ExamDal } from './exam.dal';
 import { ExamHttpService } from 'src/modules/http/http.sevice';
@@ -14,9 +14,7 @@ export class ExamService {
     private readonly httpService: ExamHttpService,
   ) {}
 
-  async createExam(
-    examResDto: ExamResDto,
-  ): Promise<HttpResponse<{ exams: ExamResDto }>> {
+  async createExam(examResDto: ExamResDto): Promise<HttpResponse<ExamResDto>> {
     // In case we send post req to external api
     // const externalDataResponse: AxiosResponse<ExamReqDto> =
     // await this.httpService.generateExam(examReqDto);
@@ -31,7 +29,7 @@ export class ExamService {
       return {
         statusCode: responseConfig.SUCCESS.statusCode,
         message: responseConfig.SUCCESS.message,
-        data: { exams: saveExam },
+        data: saveExam,
       };
     } catch (error) {
       this.logger.error('Failed to save exam request to database');
@@ -43,7 +41,7 @@ export class ExamService {
     }
   }
 
-  async getAllExams(): Promise<HttpResponse<{ exams: ExamResDto[] }>> {
+  async getAllExams(): Promise<HttpResponse<ExamResDto[]>> {
     try {
       const allExams = await this.examDal.getAllExams();
 
@@ -58,7 +56,7 @@ export class ExamService {
       return {
         statusCode: responseConfig.SUCCESS.statusCode,
         message: responseConfig.SUCCESS.message,
-        data: { exams: allExams },
+        data: allExams,
       };
     } catch (error) {
       this.logger.error('Failed to get all exams from database');
@@ -97,9 +95,15 @@ export class ExamService {
     }
   }
 
-  async updateExamById(id: string): Promise<HttpResponse<ExamResDto>> {
+  async updateExamById(
+    id: string,
+    updateExamResDto: UpDateExamResDto,
+  ): Promise<HttpResponse<ExamReqDto>> {
     try {
-      const updateUserById = await this.examDal.updateExamById(id);
+      const updateUserById = await this.examDal.updateExamById(
+        id,
+        updateExamResDto,
+      );
       if (!updateUserById) {
         return {
           statusCode: responseConfig.NOT_FOUND.statusCode,

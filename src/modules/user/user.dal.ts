@@ -1,7 +1,8 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entity/user.entity';
 import { Repository } from 'typeorm';
-import { CreateUserDto, UpdateUserDto } from './dto/createUserDto';
+import { CreateUserDto, UpdateUsernameDto } from './dto/createUserDto';
+import { IUser } from 'src/types/user.type';
 
 export class UserDal {
   constructor(
@@ -9,40 +10,43 @@ export class UserDal {
     private readonly userRepo: Repository<UserEntity>,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<CreateUserDto> {
+  async createUser(createUserDto: CreateUserDto): Promise<IUser> {
     const newUser = this.userRepo.create(createUserDto);
     const createdUser = await this.userRepo.save(newUser);
     const { password, ...userData }: CreateUserDto = createdUser;
-    return userData as CreateUserDto;
+    return userData as IUser;
   }
 
-  async getAllUser(): Promise<CreateUserDto[]> {
+  async getAllUser(): Promise<IUser[]> {
     const allUsers = await this.userRepo.find({
       order: {
         createdAt: 'ASC',
       },
     });
-    const result: CreateUserDto[] = allUsers.map((user) => {
+    const result: IUser[] = allUsers.map((user) => {
       const { password, ...userData }: CreateUserDto = user;
-      return userData as CreateUserDto;
+      return userData as IUser;
     });
 
     return result;
   }
 
-  async getUserById(id: string): Promise<CreateUserDto | null> {
+  async getUserById(id: string): Promise<IUser | null> {
     const user = await this.userRepo.findOne({
       where: { id },
     });
+    if (!user) {
+      return null;
+    }
     const { password, ...userData }: CreateUserDto = user;
 
-    return userData as CreateUserDto;
+    return userData as IUser;
   }
 
   async updateUserById(
     id: string,
-    updateUserDto: UpdateUserDto,
-  ): Promise<CreateUserDto | null> {
+    updateUsernameDto: UpdateUsernameDto,
+  ): Promise<IUser> {
     const user = await this.userRepo.findOne({
       where: { id },
     });
@@ -50,12 +54,11 @@ export class UserDal {
     if (!user) {
       return null;
     }
-    const { password, ...userData }: CreateUserDto = user;
     const result = await this.userRepo.save({
-      ...userData,
-      ...updateUserDto,
+      id,
+      ...updateUsernameDto,
     });
-    return result as CreateUserDto;
+    return result as IUser;
   }
 
   async deleteUserById(id: string): Promise<boolean> {

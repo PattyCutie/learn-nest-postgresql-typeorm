@@ -3,14 +3,17 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Database } from 'src/config/db.config';
 import { hashPassword } from 'src/utils/hash.utils';
 import { ExamEntity } from './exam.entity';
-import { ExaminationEntity } from './examination.entity';
-import { Examination } from 'src/types/examination.type';
+import { ExamQuestionEntity } from './examQuestion.entity';
 
 @Entity({ name: Database.Table.User })
 export class UserEntity {
@@ -24,6 +27,9 @@ export class UserEntity {
   })
   createdAt: Date;
 
+  @UpdateDateColumn({ type: 'timestamp' })
+  lastActive?: Date;
+
   @Column({ unique: true, nullable: false })
   username: string;
 
@@ -35,12 +41,19 @@ export class UserEntity {
 
   @BeforeInsert()
   async hashPassword() {
-    this.password = await hashPassword(this.password);
+    if (!this.password.startsWith('$2')) {
+      this.password = await hashPassword(this.password);
+    }
   }
 
-  @OneToMany(() => ExamEntity, (exam) => exam.user)
+  @OneToMany(() => ExamEntity, (exams) => exams.user)
   exams: ExamEntity[];
 
-  @OneToMany(() => ExaminationEntity, (examination) => examination.user)
-  examinations: Examination[];
+  @ManyToMany(() => ExamQuestionEntity, (examQuestions) => examQuestions.user, {
+    cascade: true,
+  })
+  @JoinTable({
+    name: 'users_examQuestions',
+  })
+  examQuestions: ExamQuestionEntity[];
 }

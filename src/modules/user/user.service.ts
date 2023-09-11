@@ -1,32 +1,33 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto } from './dto/createUserDto';
+import { CreateUserDto, UpdateUsernameDto } from './dto/createUserDto';
 import { UserDal } from './user.dal';
 import { HttpResponse } from 'src/types/http-response';
 import responseConfig from 'src/config/response.config';
 import { hashPassword } from 'src/utils/hash.utils';
+import { IUser } from 'src/types/user.type';
 
 @Injectable()
 export class UserService {
   private readonly logger = new Logger(UserService.name);
   constructor(private readonly userDal: UserDal) {}
 
-  async createUser(
-    createUserDto: CreateUserDto,
-  ): Promise<HttpResponse<CreateUserDto>> {
+  async createUser(createUserDto: CreateUserDto): Promise<HttpResponse<IUser>> {
+    const hashedPassword = await hashPassword(createUserDto.password);
+    const data = {
+      username: createUserDto.username,
+      email: createUserDto.email,
+      password: hashedPassword,
+    };
+
     try {
-      const userData = await this.userDal.createUser(createUserDto);
-      const hashedPassword = await hashPassword(createUserDto.password);
+      const userData = await this.userDal.createUser(data);
 
       this.logger.log('Successfully saved new user to database');
       this.logger.debug(JSON.stringify(userData));
       return {
         statusCode: responseConfig.SUCCESS_CREATE.statusCode,
         message: responseConfig.SUCCESS_CREATE.message,
-        data: {
-          username: createUserDto.username,
-          email: createUserDto.email,
-          password: hashedPassword,
-        },
+        data: userData,
       };
     } catch (error) {
       this.logger.error('Failed to save user request to database');
@@ -38,7 +39,7 @@ export class UserService {
     }
   }
 
-  async getAllUsers(): Promise<HttpResponse<{ users: CreateUserDto[] }>> {
+  async getAllUsers(): Promise<HttpResponse<IUser[]>> {
     try {
       const allUsers = await this.userDal.getAllUser();
 
@@ -53,7 +54,7 @@ export class UserService {
       return {
         statusCode: responseConfig.SUCCESS.statusCode,
         message: responseConfig.SUCCESS.message,
-        data: { users: allUsers },
+        data: allUsers,
       };
     } catch (error) {
       this.logger.error('Failed to get all users from database');
@@ -65,9 +66,7 @@ export class UserService {
     }
   }
 
-  async getUserById(
-    id: string,
-  ): Promise<HttpResponse<{ users: CreateUserDto }>> {
+  async getUserById(id: string): Promise<HttpResponse<IUser>> {
     try {
       const userById = await this.userDal.getUserById(id);
       if (!userById) {
@@ -81,10 +80,10 @@ export class UserService {
       return {
         statusCode: responseConfig.SUCCESS.statusCode,
         message: responseConfig.SUCCESS.message,
-        data: { users: userById },
+        data: userById,
       };
     } catch (error) {
-      this.logger.error(`Failed to update user from database with id: ${id}`);
+      this.logger.error(`Failed to get user from database with id: ${id}`);
       this.logger.error(error);
       return {
         statusCode: responseConfig.INTERNAL_SERVER_ERROR.statusCode,
@@ -95,12 +94,12 @@ export class UserService {
 
   async updateUserById(
     id: string,
-    updateUserDto: UpdateUserDto,
-  ): Promise<HttpResponse<{ users: CreateUserDto }>> {
+    updateUsernameDto: UpdateUsernameDto,
+  ): Promise<HttpResponse<IUser>> {
     try {
       const updateUserById = await this.userDal.updateUserById(
         id,
-        updateUserDto,
+        updateUsernameDto,
       );
       if (!updateUserById) {
         return {
@@ -113,7 +112,7 @@ export class UserService {
       return {
         statusCode: responseConfig.SUCCESS_UPDATED.statusCode,
         message: responseConfig.SUCCESS_UPDATED.message,
-        data: { users: updateUserById },
+        data: updateUserById,
       };
     } catch (error) {
       this.logger.error(`Failed to update user from database with id: ${id}`);

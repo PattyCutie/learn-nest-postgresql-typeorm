@@ -6,6 +6,10 @@ import {
   OneToMany,
   ManyToOne,
   JoinColumn,
+  OneToOne,
+  ManyToMany,
+  UpdateDateColumn,
+  JoinTable,
 } from 'typeorm';
 import {
   ExamType,
@@ -17,14 +21,15 @@ import {
   Topic,
 } from 'src/types/question-option.type';
 import { ExamEntity } from './exam.entity';
+import { UserEntity } from './user.entity';
 
 @Entity({ name: Database.Table.ExamQuestion })
 export class ExamQuestionEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: false })
-  examId: string;
+  @Column({ default: '' })
+  serialNubmer: string;
 
   @Column({ default: 'Toeic' })
   subjectVal: SubjectVal;
@@ -38,32 +43,54 @@ export class ExamQuestionEntity {
   @Column({ default: 'reading' })
   section: Section;
 
-  @Column({ default: 'reading-specific-1' })
-  part: Part;
-
-  @Column('json', { default: { 'Topic 1': ['Topic 1'] } })
-  topics: Topic[];
-
   @Column({ default: 'Beginner' })
   level: Level;
 
-  @Column({ nullable: true })
+  @Column({ default: 'reading-specific-1' })
+  part: Part;
+
+  @Column('json', { default: {} })
+  topics: Topic[];
+
+  @Column({ nullable: false })
   question: string;
+
+  @Column('json', { nullable: true })
+  images?: string[];
+
+  @Column('json', { nullable: true })
+  audioOutput?: string[];
 
   @Column('json', { default: {} })
   choices: string[];
 
-  @Column({ nullable: true })
-  correctAnswer: string;
+  @Column('json', { nullable: false })
+  correctAnswer: string[];
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   explanationEn: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   explanationTh: string;
 
-  @ManyToOne(() => ExamEntity, (exam) => exam.examQuestions, {
-    onDelete: 'CASCADE',
+  @UpdateDateColumn({ type: 'timestamp' })
+  timeStart?: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  timeAnswer?: Date;
+
+  @Column('json', { default: {} })
+  selectedChoice?: string | null;
+
+  @Column({ nullable: true })
+  isCorrect?: number;
+
+  @ManyToMany(() => ExamEntity, (exam) => exam.examQuestions, {
+    cascade: true,
   })
-  exam: ExamEntity;
+  @JoinTable({ name: 'exams_examQuestions' })
+  exams: ExamEntity[];
+
+  @ManyToMany(() => UserEntity, (users) => users.examQuestions)
+  user: UserEntity[];
 }

@@ -1,9 +1,13 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { AnswerSheetEntity } from './answerSheet.entity';
@@ -15,27 +19,18 @@ export class ExaminationEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: false })
-  userId: string;
+  // @Column({ type: 'uuid', nullable: false })
+  // userId: string;
 
-  @Column({ nullable: false })
+  @Column({ type: 'uuid', nullable: false })
   examId: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
-  submittedAt: Date;
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  submittedAt?: Date;
 
-  @ManyToOne(() => ExamEntity, (exam) => exam.examinations, {
-    onDelete: 'CASCADE',
-  })
-  exam: ExamEntity[];
-
-  @Column('json')
   @OneToMany(() => AnswerSheetEntity, (answerSheet) => answerSheet.examination)
-  answerSheets: AnswerSheetEntity[];
-
-  @ManyToOne(() => UserEntity, (user) => user.examinations)
-  user: UserEntity;
+  answerSheets?: AnswerSheetEntity[];
 }

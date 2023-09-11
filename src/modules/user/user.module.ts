@@ -6,18 +6,10 @@ import { UserEntity } from 'src/entity/user.entity';
 import { UserDal } from './user.dal';
 import { ExamEntity } from 'src/entity/exam.entity';
 import { ExamQuestionEntity } from 'src/entity/examQuestion.entity';
-import { ExaminationEntity } from 'src/entity/examination.entity';
-import { AnswerSheetEntity } from 'src/entity/answerSheet.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      UserEntity,
-      ExamEntity,
-      ExamQuestionEntity,
-      ExaminationEntity,
-      AnswerSheetEntity,
-    ]),
+    TypeOrmModule.forFeature([UserEntity, ExamEntity, ExamQuestionEntity]),
   ],
   providers: [UserService, UserDal],
   controllers: [UserController],

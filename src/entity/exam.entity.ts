@@ -7,6 +7,9 @@ import {
   OneToMany,
   JoinColumn,
   OneToOne,
+  UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { ExamQuestionEntity } from './examQuestion.entity';
 import {
@@ -20,16 +23,11 @@ import {
 } from 'src/types/question-option.type';
 import { Database } from 'src/config/db.config';
 import { UserEntity } from './user.entity';
-import { Examination } from 'src/types/examination.type';
-import { ExaminationEntity } from './examination.entity';
 
 @Entity({ name: Database.Table.Exam })
 export class ExamEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @Column()
-  userId: string;
 
   @CreateDateColumn({
     readonly: true,
@@ -65,14 +63,15 @@ export class ExamEntity {
   @Column({ default: 10 })
   amount?: number;
 
-  @Column('json')
-  @OneToMany(() => ExamQuestionEntity, (examQuestion) => examQuestion.exam)
-  examQuestions: ExamQuestionEntity[];
+  @UpdateDateColumn({ type: 'timestamp' })
+  submittedAt?: Date;
 
-  @Column('json', { nullable: true })
-  @OneToOne(() => ExaminationEntity, (examination) => examination.exam)
-  examinations?: Examination[];
+  @Column({ default: 0 })
+  totalScores?: number;
 
   @ManyToOne(() => UserEntity, (user) => user.exams)
   user: UserEntity;
+
+  @ManyToMany(() => ExamQuestionEntity, (examQuestion) => examQuestion.exams)
+  examQuestions: ExamQuestionEntity[];
 }

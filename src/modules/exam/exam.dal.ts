@@ -2,22 +2,29 @@ import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ExamEntity } from 'src/entity/exam.entity';
 import { DeepPartial, Repository } from 'typeorm';
-import { ExamReqDto, ExamResDto, ExamQuestionResDto } from './dto/exam.dto';
 import { ExamQuestionEntity } from 'src/entity/examQuestion.entity';
+import { UserEntity } from 'src/entity/user.entity';
+import {
+  ExamReqDto,
+  ExamResDto,
+  ExamQuestionResDto,
+  UpDateExamResDto,
+} from './dto/exam.dto';
 
 export class ExamDal {
   private readonly logger = new Logger(ExamDal.name);
 
   constructor(
+    @InjectRepository(UserEntity)
+    private readonly userRepo: Repository<UserEntity>,
     @InjectRepository(ExamEntity)
     readonly examRepo: Repository<ExamEntity>,
     @InjectRepository(ExamQuestionEntity)
-    readonly questionRepo: Repository<ExamQuestionEntity>,
+    readonly examQuestionRepo: Repository<ExamQuestionEntity>,
   ) {}
 
   async createExam(examResDto: DeepPartial<ExamResDto>): Promise<ExamResDto> {
     const examEntity: DeepPartial<ExamEntity> = {
-      userId: examResDto.userId,
       subjectVal: examResDto.subjectVal,
       examType: examResDto.examType,
       questionType: examResDto.questionType,
@@ -44,6 +51,8 @@ export class ExamDal {
           topics: questionResDto.topics,
           level: questionResDto.level,
           question: questionResDto.question,
+          images: questionResDto.images,
+          audioOutput: questionResDto.audioOutput,
           choices: questionResDto.choices,
           correctAnswer: questionResDto.correctAnswer,
           explanationEn: questionResDto.explanationEn,
@@ -51,7 +60,7 @@ export class ExamDal {
         }),
       );
 
-      const savedExamQuestions = await this.questionRepo.save(questionRes);
+      const savedExamQuestions = await this.examQuestionRepo.save(questionRes);
 
       savedExam.examQuestions = savedExamQuestions;
     }
@@ -61,7 +70,6 @@ export class ExamDal {
 
   async getAllExams(): Promise<ExamResDto[]> {
     const allExam = await this.examRepo.find({
-      relations: ['examQuestions'],
       order: {
         createdAt: 'ASC',
       },
@@ -91,11 +99,11 @@ export class ExamDal {
     return examData as ExamResDto;
   }
 
-  // fix this later after Main data base Question library is ready /////
-  // Create new DTO for update // But shall we allow user to update exam details ?
-  // or better just delete and/ or send a new requestion for new set of exam
-  // this should be the function for pro user or sudo user who wanted to recreate new exam by updating parameters/////
-  async updateExamById(id: string): Promise<ExamResDto | null> {
+  //// In case if allow to update Exam Type* -----/////
+  async updateExamById(
+    id: string,
+    updateExamResDto: UpDateExamResDto,
+  ): Promise<ExamReqDto> {
     const exam = await this.examRepo.findOne({
       where: {
         id: id,
@@ -104,12 +112,13 @@ export class ExamDal {
     if (!exam) {
       return null;
     }
-    const { ...examData }: ExamResDto = exam;
+    const { ...examData }: ExamReqDto = exam;
     const result = await this.examRepo.save({
       ...examData,
+      ...updateExamResDto,
     });
 
-    return result as ExamResDto;
+    return result as ExamReqDto;
   }
   /////////////////
 
@@ -126,7 +135,8 @@ export class ExamDal {
     const relateQuestiontodel = exam.examQuestions.map(
       (question) => question.id,
     );
-    await this.questionRepo.delete(relateQuestiontodel);
+
+    await this.examQuestionRepo.delete(relateQuestiontodel);
     // Then, delete the exam
     const deleteResult = await this.examRepo.delete(id);
 

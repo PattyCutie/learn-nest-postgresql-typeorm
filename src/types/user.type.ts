@@ -1,14 +1,14 @@
 export interface IUser {
   id: string;
   createdAt: Date;
+  lastActive?: Date;
   username: string;
   email: string;
-  password: string;
-  userRole: UserRole;
+  //password: string;
+  //userRole: UserRole;
 }
 
 export interface UserProfile {
-  userId: string;
   fname: string;
   lname: string;
 }

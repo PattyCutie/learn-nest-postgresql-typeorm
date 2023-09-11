@@ -9,9 +9,10 @@ import {
   Param,
   Patch,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { ExamService } from './exam.service';
-import { ExamResDto } from './dto/exam.dto';
+import { ExamReqDto, ExamResDto, UpDateExamResDto } from './dto/exam.dto';
 import { HttpResponse } from 'src/types/http-response';
 
 @Controller('exam')
@@ -23,14 +24,14 @@ export class ExamController {
   @HttpCode(HttpStatus.OK)
   async createExamWithService(
     @Body() examResDto: ExamResDto,
-  ): Promise<HttpResponse<{ exams: ExamResDto }>> {
+  ): Promise<HttpResponse<ExamResDto>> {
     return await this.examService.createExam(examResDto);
   }
 
   @Version('1')
   @Get()
   @HttpCode(HttpStatus.OK)
-  async getUsers(): Promise<HttpResponse<{ exams: ExamResDto[] }>> {
+  async getUsers(): Promise<HttpResponse<ExamResDto[]>> {
     return this.examService.getAllExams();
   }
 
@@ -48,8 +49,9 @@ export class ExamController {
   @HttpCode(HttpStatus.OK)
   async updateUserById(
     @Param('id') id: string,
-  ): Promise<HttpResponse<ExamResDto>> {
-    return this.examService.updateExamById(id);
+    @Body() updateExamResDto: UpDateExamResDto,
+  ): Promise<HttpResponse<ExamReqDto>> {
+    return this.examService.updateExamById(id, updateExamResDto);
   }
 
   @Version('1')

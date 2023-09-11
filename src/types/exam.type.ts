@@ -9,23 +9,24 @@ import {
 } from './question-option.type';
 export interface ExamReq {
   id: string;
-  userId: string;
   createdAt?: Date;
   subjectVal: SubjectVal;
   examType: ExamType;
-  questionTypes: QuestionType;
+  questionType: QuestionType;
   section: Section;
   part: Part;
   topics: Topic[];
   level: Level;
   duration: number;
   amount: number;
+  submittedAt?: Date;
+  totlalScores?: number;
   examQuestions: ExamQuestion[];
 }
 
 export interface ExamQuestion {
   id: string;
-  examId: string;
+  serialNumber: string;
   subjectVal: SubjectVal;
   examType?: ExamType;
   questionTypes: QuestionType;
@@ -34,8 +35,14 @@ export interface ExamQuestion {
   part: string;
   topics: Topic[];
   question: string;
+  images?: string[];
+  audioOutput?: string[];
   choices: string[];
-  correctAnswer: string;
+  correctAnswer: string[];
   explainationEn: string;
   explainationTh: string;
+  timeStart?: Date;
+  timeAnswer?: Date;
+  selectedChoice?: string[] | null;
+  isCorrect?: number;
 }

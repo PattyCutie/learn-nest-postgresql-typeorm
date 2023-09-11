@@ -1,30 +1,45 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { ExaminationEntity } from './examination.entity';
 import { Database } from 'src/config/db.config';
+import { ExamQuestionEntity } from './examQuestion.entity';
 
 @Entity({ name: Database.Table.AnswerSheet })
 export class AnswerSheetEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('uuid')
+  @Column({ type: 'uuid', nullable: false })
   examinationId: string;
 
-  @Column('uuid')
+  @Column({ type: 'uuid', nullable: false })
   questionId: string;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    nullable: true,
+  })
   timeStart?: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   timeAnswer?: Date;
 
   @Column({ nullable: true })
   selectedChoice?: string;
 
-  @Column({ type: 'boolean', nullable: true })
-  isCorrect?: boolean;
+  @Column({ nullable: true })
+  isCorrect?: number;
 
-  @ManyToOne(() => ExaminationEntity, (examination) => examination.answerSheets)
+  @ManyToOne(
+    () => ExaminationEntity,
+    (examination) => examination.answerSheets,
+    { onDelete: 'CASCADE' },
+  )
   examination: ExaminationEntity;
 }

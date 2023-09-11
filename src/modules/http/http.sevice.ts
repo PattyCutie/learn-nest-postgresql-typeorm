@@ -20,7 +20,7 @@ export class ExamHttpService {
     examReqDTO: ExamReqDto,
   ): Promise<AxiosResponse<ExamReqDto>> {
     const result: AxiosResponse<ExamReqDto> = await firstValueFrom(
-      this.httpService.post('/create_response', examReqDTO, this.config),
+      this.httpService.post('/create_exam', examReqDTO, this.config),
     );
     return result;
   }
