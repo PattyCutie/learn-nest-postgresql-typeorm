@@ -46,7 +46,9 @@ export class UserEntity {
     }
   }
 
-  @OneToMany(() => ExamEntity, (exams) => exams.user)
+  @OneToMany(() => ExamEntity, (exams) => exams.user, {
+    cascade: true,
+  })
   exams: ExamEntity[];
 
   @ManyToMany(() => ExamQuestionEntity, (examQuestions) => examQuestions.user, {

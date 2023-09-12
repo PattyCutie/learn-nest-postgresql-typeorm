@@ -10,10 +10,19 @@ import {
   Patch,
   Delete,
   Put,
+  UsePipes,
 } from '@nestjs/common';
 import { ExamService } from './exam.service';
-import { ExamReqDto, ExamResDto, UpDateExamResDto } from './dto/exam.dto';
+import {
+  ExamReqDto,
+  ExamResDto,
+  UpDateExamResDto,
+  UpdateExamAnswerDto,
+  UpdateExamResult,
+} from './dto/exam.dto';
 import { HttpResponse } from 'src/types/http-response';
+import { ExamEntity } from 'src/entity/exam.entity';
+import { ExamReq } from 'src/types/exam.type';
 
 @Controller('exam')
 export class ExamController {
@@ -61,5 +70,32 @@ export class ExamController {
     @Param('id') id: string,
   ): Promise<HttpResponse<boolean>> {
     return this.examService.deleteExamById(id);
+  }
+
+  /////////////////
+  /////////////////
+  @Version('1')
+  @Post('user/:id/create')
+  @HttpCode(HttpStatus.OK)
+  async userCreateNewExam(
+    @Param('id') userId: string,
+    @Body() examResDto: ExamResDto,
+  ): Promise<HttpResponse<ExamEntity>> {
+    return this.examService.userCreateNewExam(userId, examResDto);
+  }
+
+  @Version('1')
+  @HttpCode(HttpStatus.OK)
+  @Patch('/:id/update')
+  async updateExamAndQuestions(
+    @Param('id') examId: string,
+    @Body() updateExamDto: UpdateExamResult,
+    @Body() updateAnswerDto: UpdateExamAnswerDto,
+  ) {
+    return this.examService.submitExamAns(
+      examId,
+      updateExamDto,
+      updateAnswerDto,
+    );
   }
 }

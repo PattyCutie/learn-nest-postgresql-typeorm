@@ -1,10 +1,18 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ExamReqDto, ExamResDto, UpDateExamResDto } from './dto/exam.dto';
+import {
+  ExamReqDto,
+  ExamResDto,
+  UpDateExamResDto,
+  UpdateExamAnswerDto,
+  UpdateExamResult,
+} from './dto/exam.dto';
 import { HttpResponse } from 'src/types/http-response';
 import { ExamDal } from './exam.dal';
 import { ExamHttpService } from 'src/modules/http/http.sevice';
 import responseConfig from 'src/config/response.config';
 import { AxiosResponse } from 'axios';
+import { ExamReq } from 'src/types/exam.type';
+import { ExamEntity } from 'src/entity/exam.entity';
 
 @Injectable()
 export class ExamService {
@@ -145,6 +153,77 @@ export class ExamService {
       };
     } catch (error) {
       this.logger.error(`Failed to delete exam from database with id: ${id}`);
+      this.logger.error(error);
+      return {
+        statusCode: responseConfig.INTERNAL_SERVER_ERROR.statusCode,
+        message: responseConfig.INTERNAL_SERVER_ERROR.message,
+      };
+    }
+  }
+
+  async userCreateNewExam(
+    userId: string,
+    examResDto: ExamResDto,
+  ): Promise<HttpResponse<ExamEntity>> {
+    try {
+      const newExam = await this.examDal.userCreateNewExam(userId, examResDto);
+      if (!newExam) {
+        return {
+          statusCode: responseConfig.NOT_FOUND.statusCode,
+          message: responseConfig.NOT_FOUND.message,
+        };
+      }
+      this.logger.log(
+        `Successfully create new exam for user ${userId} with exam id: ${JSON.stringify(
+          newExam.id,
+        )}`,
+      );
+      this.logger.debug(`Create at : ${JSON.stringify(newExam.createdAt)}`);
+      return {
+        statusCode: responseConfig.SUCCESS_CREATE.statusCode,
+        message: responseConfig.SUCCESS_CREATE.message,
+        data: newExam,
+      };
+    } catch (error) {
+      this.logger.error(`Failed to create new exam for user id: ${userId}`);
+      this.logger.error(error);
+      return {
+        statusCode: responseConfig.INTERNAL_SERVER_ERROR.statusCode,
+        message: responseConfig.INTERNAL_SERVER_ERROR.message,
+      };
+    }
+  }
+
+  async submitExamAns(
+    examId: string,
+    updateExamDto: UpdateExamResult,
+    updateAnswerDto: UpdateExamAnswerDto,
+  ): Promise<HttpResponse<ExamEntity>> {
+    try {
+      const submitExam = await this.examDal.submitExamAns(
+        examId,
+        updateExamDto,
+        updateAnswerDto,
+      );
+      if (!submitExam) {
+        return {
+          statusCode: responseConfig.NOT_FOUND.statusCode,
+          message: responseConfig.NOT_FOUND.message,
+        };
+      }
+      this.logger.log(
+        `Successfully submit exam and answer for exam id: ${examId} with exam id: ${JSON.stringify(
+          submitExam.id,
+        )}`,
+      );
+      this.logger.debug(JSON.stringify(submitExam.createdAt));
+      return {
+        statusCode: responseConfig.SUCCESS_UPDATED.statusCode,
+        message: responseConfig.SUCCESS_UPDATED.message,
+        data: submitExam,
+      };
+    } catch (error) {
+      this.logger.error(`Failed to create new exam for user id: ${examId}`);
       this.logger.error(error);
       return {
         statusCode: responseConfig.INTERNAL_SERVER_ERROR.statusCode,

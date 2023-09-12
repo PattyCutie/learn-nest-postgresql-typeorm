@@ -17,11 +17,11 @@ export interface ExamReq {
   part: Part;
   topics: Topic[];
   level: Level;
-  duration: number;
-  amount: number;
+  duration?: number;
+  amount?: number;
   submittedAt?: Date;
   totlalScores?: number;
-  examQuestions: ExamQuestion[];
+  examQuestions?: ExamQuestion[];
 }
 
 export interface ExamQuestion {

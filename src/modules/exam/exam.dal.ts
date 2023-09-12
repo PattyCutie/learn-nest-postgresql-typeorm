@@ -1,14 +1,16 @@
 import { Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ExamEntity } from 'src/entity/exam.entity';
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial, Index, Repository } from 'typeorm';
 import { ExamQuestionEntity } from 'src/entity/examQuestion.entity';
 import { UserEntity } from 'src/entity/user.entity';
 import {
   ExamReqDto,
   ExamResDto,
   ExamQuestionResDto,
+  UpdateExamResult,
   UpDateExamResDto,
+  UpdateExamAnswerDto,
 } from './dto/exam.dto';
 
 export class ExamDal {
@@ -34,7 +36,7 @@ export class ExamDal {
       level: examResDto.level,
       duration: examResDto.duration,
       amount: examResDto.amount,
-      examQuestions: examResDto.examQuestions,
+      examQuestions: [examResDto.examQuestions[0]],
     };
 
     const savedExam = await this.examRepo.save(examEntity);
@@ -65,11 +67,13 @@ export class ExamDal {
       savedExam.examQuestions = savedExamQuestions;
     }
 
+    this.logger.log(savedExam);
     return savedExam as ExamResDto;
   }
 
   async getAllExams(): Promise<ExamResDto[]> {
     const allExam = await this.examRepo.find({
+      relations: ['examQuestions'],
       order: {
         createdAt: 'ASC',
       },
@@ -141,5 +145,109 @@ export class ExamDal {
     const deleteResult = await this.examRepo.delete(id);
 
     return deleteResult.affected > 0;
+  }
+
+  async userCreateNewExam(
+    userId: string,
+    examResDto: ExamResDto,
+  ): Promise<ExamEntity> {
+    const user = await this.userRepo.findOne({
+      where: { id: userId },
+      select: ['id', 'exams', 'examQuestions'],
+      relations: ['exams', 'examQuestions'],
+    });
+    if (!user) {
+      this.logger.error(`User with id ${userId} not found`);
+    }
+    const createNewExam = this.examRepo.create({
+      ...examResDto,
+      user,
+    });
+
+    const savedExam = await this.examRepo.save(createNewExam);
+    user.exams.push(savedExam);
+    //await this.userRepo.save(user);
+    const saveQ = await this.examQuestionRepo.save(savedExam.examQuestions);
+    savedExam.examQuestions = saveQ;
+
+    return savedExam;
+  }
+
+  /// Fx Below need to fix becuase it does not update and seeding correctly
+  async submitExamAns(
+    examId: string,
+    updateExamDto: UpdateExamResult,
+    updateAnswerDto: UpdateExamAnswerDto,
+  ): Promise<ExamEntity | null> {
+    const exam = await this.examRepo.findOne({
+      where: { id: examId },
+      relations: ['examQuestions'],
+    });
+
+    if (!exam) {
+      this.logger.error(`User with id ${examId} not found`);
+    }
+
+    // Update exam
+    exam.submittedAt = updateExamDto.submittedAt;
+    exam.totalScores = this.calculateTotalScores(exam.examQuestions);
+
+    // Save the updated exam
+    const updatedExam = await this.examRepo.save(exam);
+
+    // Update associated exam questions and track answers
+    if (exam.examQuestions) {
+      const updateExamAns = await Promise.all(
+        exam.examQuestions.map(async (questionDto, index) => {
+          const question = exam.examQuestions.find(
+            (q) => q.id === questionDto.id,
+          );
+
+          if (!question) {
+            this.logger.error('Question not found!');
+          }
+
+          // update answer
+          question.timeStart = updateAnswerDto.timeStart[index];
+          question.timeAnswer = updateAnswerDto.timeAnswer[index];
+          question.selectedChoice = updateAnswerDto.selectedChoice;
+          // Calculate correctness
+          question.isCorrect = this.calculateCorrectness(
+            question.correctAnswer,
+            question.selectedChoice,
+          );
+
+          return await this.examQuestionRepo.save(question);
+        }),
+      );
+
+      updatedExam.examQuestions = updateExamAns;
+    }
+
+    return await this.examRepo.save(updatedExam);
+  }
+
+  private calculateCorrectness(
+    correctAnswer: string[],
+    selectedChoice: string[] | null,
+  ): number {
+    if (!selectedChoice) {
+      return 0;
+    }
+
+    const correct = correctAnswer.join(',');
+    const selected = selectedChoice.join(',');
+
+    return correct === selected ? 1 : 0;
+  }
+
+  private calculateTotalScores(questions: ExamQuestionEntity[]): number {
+    let totalScores = 0;
+    questions.forEach((question) => {
+      if (question.isCorrect === 1) {
+        totalScores += 1;
+      }
+    });
+    return totalScores;
   }
 }

@@ -4,9 +4,6 @@ import {
   Column,
   CreateDateColumn,
   ManyToOne,
-  OneToMany,
-  JoinColumn,
-  OneToOne,
   UpdateDateColumn,
   ManyToMany,
   JoinTable,
@@ -69,9 +66,12 @@ export class ExamEntity {
   @Column({ default: 0 })
   totalScores?: number;
 
-  @ManyToOne(() => UserEntity, (user) => user.exams)
+  @ManyToOne(() => UserEntity, (user) => user.exams, {
+    onDelete: 'CASCADE',
+  })
   user: UserEntity;
 
   @ManyToMany(() => ExamQuestionEntity, (examQuestion) => examQuestion.exams)
+  @JoinTable({ name: 'exams_examQuestions' })
   examQuestions: ExamQuestionEntity[];
 }

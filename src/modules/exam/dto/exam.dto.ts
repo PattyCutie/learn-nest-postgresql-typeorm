@@ -1,5 +1,10 @@
-import { IsNotEmpty, IsNumber, IsEnum, IsOptional } from 'class-validator';
-import { Type } from 'class-transformer';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsEnum,
+  IsOptional,
+  IsArray,
+} from 'class-validator';
 import {
   ExamType,
   Level,
@@ -84,7 +89,6 @@ export class ExamResDto {
   amount?: number;
 
   @IsOptional()
-  @Type(() => ExamQuestionResDto)
   examQuestions: DeepPartial<ExamQuestionResDto[]>;
 }
 
@@ -93,7 +97,7 @@ export class ExamQuestionResDto {
   // @IsUUID()
   // examId: string;
   @IsOptional()
-  serialNumber?: number;
+  serialNumber?: string;
 
   @IsNotEmpty()
   subjectVal: DeepPartial<SubjectVal>;
@@ -124,12 +128,15 @@ export class ExamQuestionResDto {
   @IsNotEmpty()
   images?: string[];
 
+  @IsArray()
   @IsNotEmpty()
   audioOutput?: string[];
 
+  @IsArray()
   @IsNotEmpty()
   choices: string[];
 
+  @IsArray()
   @IsNotEmpty()
   correctAnswer: string[];
 
@@ -162,6 +169,7 @@ export class UpdateExamAnswerDto {
   @IsOptional()
   timeAnswer?: Date;
 
+  @IsArray()
   @IsOptional()
   selectedChoice?: string[] | null;
 

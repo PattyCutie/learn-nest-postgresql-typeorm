@@ -9,6 +9,7 @@ import { ExamDal } from './exam.dal';
 import { UserEntity } from 'src/entity/user.entity';
 import { UserDal } from '../user/user.dal';
 import { UserService } from '../user/user.service';
+import { UserController } from '../user/user.controller';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { UserService } from '../user/user.service';
     HttpServiceModule,
   ],
   providers: [ExamService, ExamDal, UserService, UserDal],
-  controllers: [ExamController],
+  controllers: [ExamController, UserController],
   exports: [ExamService],
 })
 export class ExamModule {}

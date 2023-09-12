@@ -6,6 +6,7 @@ import { UserEntity } from 'src/entity/user.entity';
 import { UserDal } from './user.dal';
 import { ExamEntity } from 'src/entity/exam.entity';
 import { ExamQuestionEntity } from 'src/entity/examQuestion.entity';
+import { ExamController } from '../exam/exam.controller';
 
 @Module({
   imports: [

@@ -3,10 +3,6 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToMany,
-  ManyToOne,
-  JoinColumn,
-  OneToOne,
   ManyToMany,
   UpdateDateColumn,
   JoinTable,
@@ -29,7 +25,7 @@ export class ExamQuestionEntity {
   id: string;
 
   @Column({ default: '' })
-  serialNubmer: string;
+  serialNumber: string;
 
   @Column({ default: 'Toeic' })
   subjectVal: SubjectVal;
@@ -61,7 +57,7 @@ export class ExamQuestionEntity {
   @Column('json', { nullable: true })
   audioOutput?: string[];
 
-  @Column('json', { default: {} })
+  @Column('json', { default: [] })
   choices: string[];
 
   @Column('json', { nullable: false })
@@ -79,14 +75,14 @@ export class ExamQuestionEntity {
   @UpdateDateColumn({ type: 'timestamp' })
   timeAnswer?: Date;
 
-  @Column('json', { default: {} })
-  selectedChoice?: string | null;
+  @Column('json', { default: [] })
+  selectedChoice?: string[] | null;
 
   @Column({ nullable: true })
   isCorrect?: number;
 
   @ManyToMany(() => ExamEntity, (exam) => exam.examQuestions, {
-    cascade: true,
+    onDelete: 'CASCADE',
   })
   @JoinTable({ name: 'exams_examQuestions' })
   exams: ExamEntity[];
