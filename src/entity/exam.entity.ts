@@ -72,6 +72,10 @@ export class ExamEntity {
   user: UserEntity;
 
   @ManyToMany(() => ExamQuestionEntity, (examQuestion) => examQuestion.exams)
-  @JoinTable({ name: 'exams_examQuestions' })
+  @JoinTable({
+    name: 'exams_examQuestions',
+    joinColumn: { name: 'examId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: ' examQuestionsId', referencedColumnName: 'id' },
+  })
   examQuestions: ExamQuestionEntity[];
 }

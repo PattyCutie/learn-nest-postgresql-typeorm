@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ExamEntity } from 'src/entity/exam.entity';
 import { DeepPartial, Index, Repository } from 'typeorm';
@@ -8,10 +8,10 @@ import {
   ExamReqDto,
   ExamResDto,
   ExamQuestionResDto,
-  UpdateExamResult,
   UpDateExamResDto,
-  UpdateExamAnswerDto,
+  UpdateExamResultDto,
 } from './dto/exam.dto';
+import { join } from 'path';
 
 export class ExamDal {
   private readonly logger = new Logger(ExamDal.name);
@@ -25,7 +25,7 @@ export class ExamDal {
     readonly examQuestionRepo: Repository<ExamQuestionEntity>,
   ) {}
 
-  async createExam(examResDto: DeepPartial<ExamResDto>): Promise<ExamResDto> {
+  async createExam(examResDto: ExamResDto): Promise<ExamResDto> {
     const examEntity: DeepPartial<ExamEntity> = {
       subjectVal: examResDto.subjectVal,
       examType: examResDto.examType,
@@ -36,7 +36,7 @@ export class ExamDal {
       level: examResDto.level,
       duration: examResDto.duration,
       amount: examResDto.amount,
-      examQuestions: [examResDto.examQuestions[0]],
+      examQuestions: examResDto.examQuestions,
     };
 
     const savedExam = await this.examRepo.save(examEntity);
@@ -153,34 +153,67 @@ export class ExamDal {
   ): Promise<ExamEntity> {
     const user = await this.userRepo.findOne({
       where: { id: userId },
-      select: ['id', 'exams', 'examQuestions'],
-      relations: ['exams', 'examQuestions'],
+      select: ['id'],
     });
+
     if (!user) {
-      this.logger.error(`User with id ${userId} not found`);
+      throw new NotFoundException(`User with id ${userId} not found`);
     }
-    const createNewExam = this.examRepo.create({
+
+    const createNewExam: DeepPartial<ExamResDto> = this.examRepo.create({
       ...examResDto,
+      //examQuestions: [examResDto.examQuestions[0]],
       user,
     });
 
     const savedExam = await this.examRepo.save(createNewExam);
-    user.exams.push(savedExam);
-    //await this.userRepo.save(user);
-    const saveQ = await this.examQuestionRepo.save(savedExam.examQuestions);
-    savedExam.examQuestions = saveQ;
+
+    const createQ = examResDto.examQuestions.map(
+      (questionResDto: ExamQuestionResDto) => ({
+        ...questionResDto,
+        examId: savedExam.id,
+      }),
+    );
+    const saveQ = await this.examQuestionRepo.save(createQ);
+    savedExam.examQuestions = [...saveQ];
 
     return savedExam;
   }
 
+  async getAExamsByUserId(userId: string): Promise<ExamResDto[]> {
+    const examsOfUser = await this.examRepo.find({
+      where: { user: { id: userId } },
+    });
+
+    if (!examsOfUser) {
+      throw new NotFoundException(`User with id ${userId} not found`);
+    }
+    // const examIds = examsOfUser.map((exam) => exam.id);
+    // examsOfUser.forEach((exam) => {
+    //   exam.examQuestions = examIds[exam.id];
+    // });
+
+    // // Logging examsOfUser for debugging
+    // this.logger.debug(JSON.stringify(examIds));
+
+    return examsOfUser;
+  }
+
+  async getExamAll(): Promise<ExamEntity[]> {
+    const allExams = this.examRepo.find({
+      relations: ['examQuestions'],
+    });
+    return allExams;
+  }
+
+  /////////////////////////////////////////
   /// Fx Below need to fix becuase it does not update and seeding correctly
   async submitExamAns(
     examId: string,
-    updateExamDto: UpdateExamResult,
-    updateAnswerDto: UpdateExamAnswerDto,
+    updateExamResultDto: UpdateExamResultDto,
   ): Promise<ExamEntity | null> {
     const exam = await this.examRepo.findOne({
-      where: { id: examId },
+      where: { examQuestions: { id: examId } },
       relations: ['examQuestions'],
     });
 
@@ -189,44 +222,16 @@ export class ExamDal {
     }
 
     // Update exam
-    exam.submittedAt = updateExamDto.submittedAt;
+    exam.submittedAt = updateExamResultDto.submittedAt;
     exam.totalScores = this.calculateTotalScores(exam.examQuestions);
-
     // Save the updated exam
     const updatedExam = await this.examRepo.save(exam);
-
-    // Update associated exam questions and track answers
-    if (exam.examQuestions) {
-      const updateExamAns = await Promise.all(
-        exam.examQuestions.map(async (questionDto, index) => {
-          const question = exam.examQuestions.find(
-            (q) => q.id === questionDto.id,
-          );
-
-          if (!question) {
-            this.logger.error('Question not found!');
-          }
-
-          // update answer
-          question.timeStart = updateAnswerDto.timeStart[index];
-          question.timeAnswer = updateAnswerDto.timeAnswer[index];
-          question.selectedChoice = updateAnswerDto.selectedChoice;
-          // Calculate correctness
-          question.isCorrect = this.calculateCorrectness(
-            question.correctAnswer,
-            question.selectedChoice,
-          );
-
-          return await this.examQuestionRepo.save(question);
-        }),
-      );
-
-      updatedExam.examQuestions = updateExamAns;
-    }
 
     return await this.examRepo.save(updatedExam);
   }
 
+  //////////////////////////////////
+  //// prepare functions for calculate score
   private calculateCorrectness(
     correctAnswer: string[],
     selectedChoice: string[] | null,

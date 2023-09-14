@@ -84,9 +84,15 @@ export class ExamQuestionEntity {
   @ManyToMany(() => ExamEntity, (exam) => exam.examQuestions, {
     onDelete: 'CASCADE',
   })
-  @JoinTable({ name: 'exams_examQuestions' })
   exams: ExamEntity[];
 
-  @ManyToMany(() => UserEntity, (users) => users.examQuestions)
-  user: UserEntity[];
+  @ManyToMany(() => UserEntity, (users) => users.examQuestions, {
+    cascade: true,
+  })
+  @JoinTable({
+    name: 'examQuestions_users',
+    joinColumn: { name: 'examQuestionsId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'userId', referencedColumnName: 'id' },
+  })
+  users: UserEntity[];
 }

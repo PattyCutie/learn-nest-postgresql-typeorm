@@ -51,11 +51,6 @@ export class UserEntity {
   })
   exams: ExamEntity[];
 
-  @ManyToMany(() => ExamQuestionEntity, (examQuestions) => examQuestions.user, {
-    cascade: true,
-  })
-  @JoinTable({
-    name: 'users_examQuestions',
-  })
+  @ManyToMany(() => ExamQuestionEntity, (examQuestions) => examQuestions.users)
   examQuestions: ExamQuestionEntity[];
 }

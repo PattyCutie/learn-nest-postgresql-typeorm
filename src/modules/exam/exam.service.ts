@@ -3,8 +3,7 @@ import {
   ExamReqDto,
   ExamResDto,
   UpDateExamResDto,
-  UpdateExamAnswerDto,
-  UpdateExamResult,
+  UpdateExamResultDto,
 } from './dto/exam.dto';
 import { HttpResponse } from 'src/types/http-response';
 import { ExamDal } from './exam.dal';
@@ -13,6 +12,7 @@ import responseConfig from 'src/config/response.config';
 import { AxiosResponse } from 'axios';
 import { ExamReq } from 'src/types/exam.type';
 import { ExamEntity } from 'src/entity/exam.entity';
+import { ReturnDocument } from 'typeorm';
 
 @Injectable()
 export class ExamService {
@@ -167,6 +167,7 @@ export class ExamService {
   ): Promise<HttpResponse<ExamEntity>> {
     try {
       const newExam = await this.examDal.userCreateNewExam(userId, examResDto);
+
       if (!newExam) {
         return {
           statusCode: responseConfig.NOT_FOUND.statusCode,
@@ -194,16 +195,41 @@ export class ExamService {
     }
   }
 
+  async getAExamsByUserId(userId: string): Promise<HttpResponse<ExamResDto[]>> {
+    try {
+      const examsOfuser = await this.examDal.getAExamsByUserId(userId);
+
+      if (!examsOfuser) {
+        return {
+          statusCode: responseConfig.NOT_FOUND.statusCode,
+          message: responseConfig.NOT_FOUND.message,
+        };
+      }
+      this.logger.log('Successfully get exam by id from database');
+      this.logger.debug(examsOfuser.length);
+      return {
+        statusCode: responseConfig.SUCCESS.statusCode,
+        message: responseConfig.SUCCESS.message,
+        data: examsOfuser,
+      };
+    } catch (error) {
+      this.logger.error('Failed to get all exams from database');
+      this.logger.error(error);
+      return {
+        statusCode: responseConfig.INTERNAL_SERVER_ERROR.statusCode,
+        message: responseConfig.INTERNAL_SERVER_ERROR.message,
+      };
+    }
+  }
+
   async submitExamAns(
     examId: string,
-    updateExamDto: UpdateExamResult,
-    updateAnswerDto: UpdateExamAnswerDto,
+    updateExamResultDto: UpdateExamResultDto,
   ): Promise<HttpResponse<ExamEntity>> {
     try {
       const submitExam = await this.examDal.submitExamAns(
         examId,
-        updateExamDto,
-        updateAnswerDto,
+        updateExamResultDto,
       );
       if (!submitExam) {
         return {

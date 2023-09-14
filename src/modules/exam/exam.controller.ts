@@ -17,8 +17,7 @@ import {
   ExamReqDto,
   ExamResDto,
   UpDateExamResDto,
-  UpdateExamAnswerDto,
-  UpdateExamResult,
+  UpdateExamResultDto,
 } from './dto/exam.dto';
 import { HttpResponse } from 'src/types/http-response';
 import { ExamEntity } from 'src/entity/exam.entity';
@@ -85,17 +84,21 @@ export class ExamController {
   }
 
   @Version('1')
+  @Get('user/:id')
   @HttpCode(HttpStatus.OK)
-  @Patch('/:id/update')
+  async getExamByUserId(
+    @Param('id') userId: string,
+  ): Promise<HttpResponse<ExamResDto[]>> {
+    return this.examService.getAExamsByUserId(userId);
+  }
+
+  @Version('1')
+  @HttpCode(HttpStatus.OK)
+  @Put('/:id/update')
   async updateExamAndQuestions(
     @Param('id') examId: string,
-    @Body() updateExamDto: UpdateExamResult,
-    @Body() updateAnswerDto: UpdateExamAnswerDto,
+    @Body() updateExamResultDto: UpdateExamResultDto,
   ) {
-    return this.examService.submitExamAns(
-      examId,
-      updateExamDto,
-      updateAnswerDto,
-    );
+    return this.examService.submitExamAns(examId, updateExamResultDto);
   }
 }

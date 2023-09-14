@@ -153,13 +153,16 @@ export class UpDateExamResDto {
   examType?: DeepPartial<ExamType>;
 }
 
-export class UpdateExamResult {
+export class UpdateExamResultDto {
   @IsOptional()
   submittedAt?: Date;
 
   @IsNumber()
   @IsOptional()
   totalScores?: number;
+
+  @IsOptional()
+  examQuestions: ExamQuestionResDto[];
 }
 
 export class UpdateExamAnswerDto {
