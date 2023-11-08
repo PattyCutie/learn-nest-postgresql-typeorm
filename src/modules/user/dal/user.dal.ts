@@ -6,11 +6,16 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { UserEntity } from '../entity/user.entity';
 import { IUser } from '../interface/user.interface';
 import { UpdateUsernameDto } from '../dto/update-username.dto';
+import { UserProfile } from 'src/modules/user-profile/interface/user-profile.interface';
+import { UserProfileEntity } from 'src/modules/user-profile/entity/user-profile.entity';
+import { UpdateUserProfileDto } from 'src/modules/user-profile/dto/update-user-profile.dto';
 
 export class UserDal {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepo: Repository<UserEntity>,
+    @InjectRepository(UserProfileEntity)
+    private readonly userProfileRepo: Repository<UserProfileEntity>,
   ) {}
   async createUser(createUserDto: CreateUserDto): Promise<IUser> {
     const user = await this.userRepo.findOne({
@@ -124,5 +129,67 @@ export class UserDal {
       return false;
     }
     return true;
+  }
+
+  //User Profile by User id
+  async getAllUserWithUserProfile(): Promise<IUser[]> {
+    const users = await this.userRepo.find({
+      order: {
+        createdAt: 'ASC',
+      },
+      relations: ['userProfile'],
+    });
+
+    if (users.length === 0) {
+      throw new NotFoundException(`Users not Found`);
+    }
+
+    const result: IUser[] = users.map((user) => {
+      const { password, ...userData }: IUser = user;
+      return userData as IUser;
+    });
+
+    return result;
+  }
+
+  async getUserProfileByUserId(id: string): Promise<UserProfile | null> {
+    const user = await this.userRepo.findOne({
+      where: { id: id },
+      relations: ['userProfile'],
+    });
+
+    if (!user.userProfile) {
+      throw new NotFoundException(
+        `User profile with user's id: ${id} not found`,
+      );
+    }
+
+    return user.userProfile;
+  }
+
+  async updateUserProfileByUserId(
+    id: string,
+    updateUserProfileDto: UpdateUserProfileDto,
+  ): Promise<UserProfile> {
+    const user = await this.userRepo.findOne({
+      where: { id: id },
+      relations: ['userProfile'],
+    });
+
+    if (!user.userProfile) {
+      throw new NotFoundException(
+        `User's Profile for user id: ${id} not found`,
+      );
+    }
+
+    const { ...userProfileData }: UpdateUserProfileDto = user.userProfile;
+
+    const updateProfile = await this.userProfileRepo.save({
+      //userId: user.id,
+      ...userProfileData,
+      ...updateUserProfileDto,
+    });
+
+    return updateProfile;
   }
 }

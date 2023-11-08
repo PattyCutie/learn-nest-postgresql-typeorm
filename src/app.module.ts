@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { UserEntity } from './modules/user/entity/user.entity';
+import { UserProfileModule } from './modules/user-profile/user-profile.module';
+import { UserProfileEntity } from './modules/user-profile/entity/user-profile.entity';
 
 @Module({
   imports: [
@@ -21,13 +23,14 @@ import { UserEntity } from './modules/user/entity/user.entity';
           password: configService.get('POSTGRES_PASSWORD'),
           synchronize: true,
           logging: !isProduction,
-          entities: [UserEntity],
+          entities: [UserEntity, UserProfileEntity],
         };
       },
       inject: [ConfigService],
     }),
-    UserModule,
     AuthModule,
+    UserModule,
+    UserProfileModule,
   ],
   controllers: [],
   providers: [],

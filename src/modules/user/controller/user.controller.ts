@@ -9,12 +9,15 @@ import {
   Put,
   Delete,
   Version,
+  Patch,
 } from '@nestjs/common';
 import { UserService } from '../service/user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { IUser } from '../interface/user.interface';
 import { HttpResponse } from 'src/interface/http-response.interface';
 import { UpdateUsernameDto } from '../dto/update-username.dto';
+import { UserProfile } from 'src/modules/user-profile/interface/user-profile.interface';
+import { UpdateUserProfileDto } from 'src/modules/user-profile/dto/update-user-profile.dto';
 
 @Controller('user')
 export class UserController {
@@ -74,9 +77,36 @@ export class UserController {
   @Version('1')
   @Delete('delete/:id')
   @HttpCode(HttpStatus.OK)
-  async deleteExamById(
+  async deleteUserById(
     @Param('id') id: string,
   ): Promise<HttpResponse<boolean>> {
     return this.userService.deleteUserById(id);
+  }
+
+  //User Profile by user id
+  @Version('1')
+  @Get('all/user-profile')
+  @HttpCode(HttpStatus.OK)
+  async getAllUserWithUserProfile(): Promise<HttpResponse<IUser[]>> {
+    return this.userService.getAllUserWithUserProfile();
+  }
+
+  @Version('1')
+  @Get(':id/user-profile')
+  @HttpCode(HttpStatus.OK)
+  async getUserProfileByUserId(
+    @Param('id') id: string,
+  ): Promise<HttpResponse<UserProfile>> {
+    return this.userService.getUserProfileByUserId(id);
+  }
+
+  @Version('1')
+  @Patch(':id/user-profile/update')
+  @HttpCode(HttpStatus.OK)
+  async updateUserProfileByUserId(
+    @Param('id') id: string,
+    @Body() updateUserProfileDto: UpdateUserProfileDto,
+  ): Promise<HttpResponse<UserProfile>> {
+    return this.userService.updateUserProfileByUserId(id, updateUserProfileDto);
   }
 }

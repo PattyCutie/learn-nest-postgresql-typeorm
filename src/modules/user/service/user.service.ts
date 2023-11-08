@@ -5,6 +5,9 @@ import { UserDal } from '../dal/user.dal';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { IUser } from '../interface/user.interface';
 import { UpdateUsernameDto } from '../dto/update-username.dto';
+import { UserProfile } from 'src/modules/user-profile/interface/user-profile.interface';
+import { UserProfileDal } from 'src/modules/user-profile/dal/user-profile.dal';
+import { UpdateUserProfileDto } from 'src/modules/user-profile/dto/update-user-profile.dto';
 
 @Injectable()
 export class UserService {
@@ -153,7 +156,7 @@ export class UserService {
           message: responseConfig.NOT_FOUND.message,
         };
       }
-      this.logger.log(`Successfully update user with id : ${id}`);
+      this.logger.log(`Successfully update user id : ${id}`);
       this.logger.debug(JSON.stringify(user));
       return {
         statusCode: responseConfig.SUCCESS_UPDATED.statusCode,
@@ -161,7 +164,7 @@ export class UserService {
         data: user,
       };
     } catch (error) {
-      this.logger.error(`Failed to update user with id: ${id}`);
+      this.logger.error(`Failed to update user id: ${id}`);
       this.logger.error(error);
       return {
         statusCode: responseConfig.INTERNAL_SERVER_ERROR.statusCode,
@@ -188,6 +191,98 @@ export class UserService {
       };
     } catch (error) {
       this.logger.error(`Failed to delete user with id: ${id}`);
+      this.logger.error(error);
+      return {
+        statusCode: responseConfig.INTERNAL_SERVER_ERROR.statusCode,
+        message: responseConfig.INTERNAL_SERVER_ERROR.message,
+      };
+    }
+  }
+
+  //User Profile by User id
+  async getAllUserWithUserProfile(): Promise<HttpResponse<IUser[]>> {
+    try {
+      const users = await this.userDal.getAllUserWithUserProfile();
+
+      if (users.length === 0) {
+        return {
+          statusCode: responseConfig.NOT_FOUND.statusCode,
+          message: responseConfig.NOT_FOUND.message,
+        };
+      }
+      this.logger.log(`Successfully get all users`);
+      this.logger.debug(`Number of users: ${users.length}`);
+      return {
+        statusCode: responseConfig.SUCCESS.statusCode,
+        message: responseConfig.SUCCESS.message,
+        data: users,
+      };
+    } catch (error) {
+      this.logger.error(`Failed to get all users`);
+      this.logger.error(error);
+      return {
+        statusCode: responseConfig.INTERNAL_SERVER_ERROR.statusCode,
+        message: responseConfig.INTERNAL_SERVER_ERROR.message,
+      };
+    }
+  }
+
+  async getUserProfileByUserId(
+    id: string,
+  ): Promise<HttpResponse<UserProfile | null>> {
+    try {
+      const userProfile = await this.userDal.getUserProfileByUserId(id);
+
+      if (!userProfile) {
+        return {
+          statusCode: responseConfig.NOT_FOUND.statusCode,
+          message: responseConfig.NOT_FOUND.message,
+        };
+      }
+
+      this.logger.log(`Successfully get user's profile for user's id: ${id}`);
+      this.logger.debug(JSON.stringify(userProfile));
+      return {
+        statusCode: responseConfig.SUCCESS.statusCode,
+        message: responseConfig.SUCCESS.message,
+        data: userProfile,
+      };
+    } catch (error) {
+      this.logger.error(`Failed to get user's profile from database`);
+      this.logger.error(error);
+      return {
+        statusCode: responseConfig.INTERNAL_SERVER_ERROR.statusCode,
+        message: responseConfig.INTERNAL_SERVER_ERROR.message,
+      };
+    }
+  }
+
+  async updateUserProfileByUserId(
+    id: string,
+    updateUserProfileDto: UpdateUserProfileDto,
+  ): Promise<HttpResponse<UserProfile | null>> {
+    try {
+      const userWithProfile = await this.userDal.updateUserProfileByUserId(
+        id,
+        updateUserProfileDto,
+      );
+
+      if (!userWithProfile) {
+        return {
+          statusCode: responseConfig.NOT_FOUND.statusCode,
+          message: responseConfig.NOT_FOUND.message,
+        };
+      }
+
+      this.logger.log(`Successfully get user's profile for user's id: ${id}`);
+      this.logger.debug(JSON.stringify(userWithProfile));
+      return {
+        statusCode: responseConfig.SUCCESS.statusCode,
+        message: responseConfig.SUCCESS.message,
+        data: userWithProfile,
+      };
+    } catch (error) {
+      this.logger.error(`Failed to get user's profile from database`);
       this.logger.error(error);
       return {
         statusCode: responseConfig.INTERNAL_SERVER_ERROR.statusCode,

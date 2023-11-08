@@ -1,11 +1,15 @@
 import { Database } from 'src/config/db.config';
+import { UserProfileEntity } from 'src/modules/user-profile/entity/user-profile.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
   Column,
+  OneToOne,
+  BeforeInsert,
 } from 'typeorm';
+// import * as bcrypt from 'bcrypt';
 
 @Entity({ name: Database.Table.User })
 export class UserEntity {
@@ -30,4 +34,15 @@ export class UserEntity {
 
   @Column({ unique: false, nullable: false })
   password: string;
+
+  // Move to service.ts
+  // @BeforeInsert()
+  // async hashPassword() {
+  //   const salt = await bcrypt.genSalt();
+  //   const hashedPassword = await bcrypt.hash(this.password, salt);
+  //   this.password = hashedPassword;
+  // }
+
+  @OneToOne(() => UserProfileEntity, (userProfile) => userProfile.user)
+  userProfile: UserProfileEntity;
 }

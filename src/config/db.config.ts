@@ -4,6 +4,6 @@ export const Database = {
   Table: {
     //Main Tables
     User: 'user',
-    User_Profile: 'user_profile',
+    UserProfile: 'user_profile',
   },
 };
